@@ -1,18 +1,33 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
+import NavBar from '../components/NavBar.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftConsult Pro - Dashboard</title>
+</head>
+<body class="bg-gray-50">
+  <!-- NavBar -->
+  <NavBar userName="María González" />
+  <div class="flex min-h-screen">
+
+	<!-- Contenido principal -->
+	<main class="flex-1 p-6">
+	  <slot />
+	</main>
+  </div>
+</body>
 </html>
 
-
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>
