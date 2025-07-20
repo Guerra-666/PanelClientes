@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import NavBar from '../components/NavBar.astro';
+import Sidebar from '../components/SideBar.astro';
 ---
 
 <!DOCTYPE html>
@@ -13,7 +14,10 @@ import NavBar from '../components/NavBar.astro';
 <body class="bg-gray-50">
   <!-- NavBar -->
   <NavBar userName="María González" />
+  
   <div class="flex min-h-screen">
+	<!-- Sidebar -->
+	<Sidebar />
 
 	<!-- Contenido principal -->
 	<main class="flex-1 p-6">
