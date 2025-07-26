@@ -1,0 +1,79 @@
+---
+export interface Props {
+  title?: string;
+  className?: string;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  shadow?: boolean;
+  border?: boolean;
+}
+
+const { 
+  title,
+  className = '',
+  padding = 'sm',
+  shadow = true,
+  border = true
+} = Astro.props;
+
+const paddingClasses = {
+  none: '',
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8'
+};
+
+const baseClasses = [
+  'bg-white',
+  'rounded-lg',
+  shadow && 'shadow-sm',
+  border && 'border border-gray-200',
+  paddingClasses[padding],
+  className
+].filter(Boolean).join(' ');
+---
+
+<div class={baseClasses}>
+  {title && (
+    <div class="mb-4 pb-3 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">{title}</h3>
+    </div>
+  )}
+  <slot />
+</div>
+
+<!--
+
+=== INTERFAZ PROPS ===
+- title?: Título opcional para la tarjeta
+- className?: Clases CSS adicionales personalizadas
+- padding?: Tamaño del padding ('none' | 'sm' | 'md' | 'lg')
+- shadow?: Booleano para mostrar/ocultar sombra
+- border?: Booleano para mostrar/ocultar borde
+
+=== CLASES BASE DINÁMICAS ===
+- bg-white: Fondo blanco
+- rounded-lg: Bordes redondeados grandes
+- shadow-sm: Sombra pequeña y sutil (condicional si shadow=true)
+- border border-gray-200: Borde sólido gris claro (condicional si border=true)
+
+=== SISTEMA DE PADDING ===
+- none: '' (sin padding)
+- sm: 'p-4' (padding de 1rem = 16px en todos los lados)
+- md: 'p-6' (padding de 1.5rem = 24px en todos los lados)
+- lg: 'p-8' (padding de 2rem = 32px en todos los lados)
+
+=== HEADER DEL TÍTULO (condicional) ===
+- mb-4: Margen inferior de 1rem (16px)
+- pb-3: Padding inferior de 0.75rem (12px)
+- border-b: Borde inferior
+- border-gray-200: Color del borde en gris claro
+- text-lg: Tamaño de texto grande (18px)
+- font-semibold: Peso de fuente semi-bold
+- text-gray-900: Color de texto gris muy oscuro
+
+=== FUNCIONALIDAD ===
+- filter(Boolean): Elimina valores falsy del array de clases
+- join(' '): Une las clases con espacios
+- <slot />: Permite insertar contenido hijo en el componente
+- Renderizado condicional del título con {title && (...)}
+-->

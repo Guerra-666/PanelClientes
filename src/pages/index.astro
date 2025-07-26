@@ -1,9 +1,26 @@
 ---
 import Layout from "../layouts/Layout.astro";
-
+import Info from "../components/Dashboard/Info.astro";
+import PackageCard from "../components/Dashboard/PackageCard.astro";
 
 ---
 <Layout>
-  <h1>Welcome to My Astro Site</h1>
-  <p>This is the home page of my Astro project.</p>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"></div>
+  <Info title="Información del Cliente" data={[
+    { label: "Nombre", value: "Adrian Guerra" },
+    { label: "Email", value: "adrian@Neven.com", type: "email" },
+    { label: "Teléfono", value: "+123456789", type: "phone" },
+    { label: "Fecha de Nacimiento", value: "1990-01-01", type: "date" },
+  ]} />
+
+  <div class="lg:col-span-1">
+          <PackageCard 
+            packageName="Enterprise Pro"
+            packageType="Enterprise Pro"
+            status="Activo"
+            nextBilling="15 Febrero 2024"
+            activeServices={4}
+          />
+        </div>
+      </div>
 </Layout>
