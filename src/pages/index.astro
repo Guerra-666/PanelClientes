@@ -1,26 +1,112 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Info from "../components/Dashboard/Info.astro";
-import PackageCard from "../components/Dashboard/PackageCard.astro";
+import Card from "../components/Card.astro";
+import ClientInfo from "../components/Dashboard/ClientInfo.astro";
+import PackageInfo from "../components/Dashboard/PackageInfo.astro";
+import TicketsHistory from "../components/Dashboard/TicketsHistory.astro";
+import ActiveServices from "../components/Dashboard/ActiveServices.astro";
 
+// Datos del cliente
+const clientData = {
+  empresa: "TechCorp Solutions",
+  contacto: "María González",
+  email: "maria.gonzalez@techcorp.com",
+  telefono: "+52 55 1234 5678",
+  fechaRegistro: "15 Enero 2024"
+};
+
+// Datos de los tickets
+const ticketsData = [
+  {
+    title: "Error en módulo de facturación",
+    status: "En progreso" as const,
+    priority: "high" as const,
+    dateOpened: "19 Ene 2024"
+  },
+  {
+    title: "Configuración de servidor",
+    status: "Resuelto" as const,
+    priority: "medium" as const,
+    dateOpened: "15 Ene 2024",
+    dateResolved: "16 Ene 2024"
+  },
+  {
+    title: "Actualización de certificados SSL",
+    status: "Resuelto" as const,
+    priority: "low" as const,
+    dateOpened: "12 Ene 2024",
+    dateResolved: "12 Ene 2024"
+  }
+];
+
+// Datos de servicios activos
+const servicesData = [
+  {
+    name: "Desarrollo Web",
+    description: "Aplicación web corporativa",
+    status: "Activo" as const,
+    startDate: "15 Ene 2024",
+    endDate: "15 Ene 2025"
+  },
+  {
+    name: "Consultoría Cloud",
+    description: "Migración a AWS",
+    status: "Activo" as const,
+    startDate: "20 Ene 2024",
+    endDate: "20 Jul 2024"
+  },
+  {
+    name: "Soporte Técnico",
+    description: "24/7 Support",
+    status: "Activo" as const,
+    startDate: "15 Ene 2024",
+    endDate: "15 Ene 2025"
+  },
+  {
+    name: "Hardware - Servidores",
+    description: "Dell PowerEdge R740",
+    status: "Entregado" as const,
+    startDate: "10 Ene 2024",
+    endDate: "10 Ene 2027"
+  }
+];
 ---
-<Layout>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"></div>
-  <Info title="Información del Cliente" data={[
-    { label: "Nombre", value: "Adrian Guerra" },
-    { label: "Email", value: "adrian@Neven.com", type: "email" },
-    { label: "Teléfono", value: "+123456789", type: "phone" },
-    { label: "Fecha de Nacimiento", value: "1990-01-01", type: "date" },
-  ]} />
 
-  <div class="lg:col-span-1">
-          <PackageCard 
-            packageName="Enterprise Pro"
-            packageType="Enterprise Pro"
-            status="Activo"
-            nextBilling="15 Febrero 2024"
-            activeServices={4}
-          />
+<Layout>
+  <div class="min-h-screen bg-gray-50">
+    <div class="flex">
+      <!-- Main Content -->
+      <main class="flex-1 p-6">
+        <div class="max-w-7xl mx-auto">
+          <!-- Welcome Section -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Bienvenido, {clientData.contacto}</h2>
+            <p class="text-gray-600">Gestiona tus servicios y mantente al día con tu cuenta</p>
+          </div>
+
+          <!-- Dashboard Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Información del Cliente -->
+            <ClientInfo clientData={clientData} />
+
+            <!-- Paquete Contratado -->
+            <PackageInfo 
+              packageName="Enterprise Pro"
+              status="Activo"
+              nextBilling="15 Febrero 2024"
+              activeServices={4}
+              support247={true}
+            />
+
+            <!-- Últimos Tickets -->
+            <TicketsHistory tickets={ticketsData} />
+          </div>
+
+          <!-- Servicios Activos -->
+          <ActiveServices services={servicesData} />
         </div>
-      </div>
+      </main>
+    </div>
+  </div>
 </Layout>

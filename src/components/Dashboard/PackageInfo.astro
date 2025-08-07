@@ -1,0 +1,49 @@
+---
+import Card from '../Card.astro';
+
+export interface Props {
+  packageName: string;
+  status: string;
+  nextBilling: string;
+  activeServices: number;
+  support247: boolean;
+}
+
+const { packageName, status, nextBilling, activeServices, support247 } = Astro.props;
+---
+
+<Card className="lg:col-span-1">
+  <div class="flex items-center mb-6">
+    <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4m16 0l-2-2m0 0l-2 2m2-2v4"/>
+    </svg>
+    <h3 class="text-lg font-semibold text-gray-900">Paquete Contratado</h3>
+  </div>
+  
+  <div class="space-y-4">
+    <div class="text-center">
+      <h3 class="text-2xl font-bold text-blue-600">{packageName}</h3>
+      <span class="inline-block mt-2 bg-gray-200 text-gray-700 text-sm px-3 py-1 rounded-full">
+        {status}
+      </span>
+    </div>
+    
+    <!-- Separator -->
+    <div class="border-t border-gray-200"></div>
+    
+    <div class="space-y-2">
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500">Próxima facturación:</span>
+        <span class="font-medium">{nextBilling}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500">Servicios incluidos:</span>
+        <span class="font-medium">{activeServices} activos</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500">Soporte 24/7:</span>
+        <span class="font-medium">{support247 ? 'Incluido' : 'No incluido'}</span>
+      </div>
+    </div>
+  </div>
+</Card>

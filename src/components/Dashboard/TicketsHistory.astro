@@ -1,0 +1,62 @@
+---
+import Card from '../Card.astro';
+
+export interface Props {
+  tickets: Array<{
+    title: string;
+    status: 'En progreso' | 'Resuelto';
+    priority: 'high' | 'medium' | 'low';
+    dateOpened: string;
+    dateResolved?: string;
+  }>;
+}
+
+const { tickets } = Astro.props;
+
+const getBorderColor = (priority: string) => {
+  switch(priority) {
+    case 'high': return 'border-l-yellow-400';
+    case 'medium': return 'border-l-green-400';
+    case 'low': return 'border-l-green-400';
+    default: return 'border-l-gray-400';
+  }
+};
+
+const getStatusStyle = (status: string) => {
+  switch(status) {
+    case 'En progreso': return 'bg-gray-200 text-gray-700';
+    case 'Resuelto': return 'border border-green-600 text-green-600 bg-transparent';
+    default: return 'bg-gray-200 text-gray-700';
+  }
+};
+---
+
+<Card className="lg:col-span-1">
+  <div class="flex items-center mb-4">
+    <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8M8 8v8M4 6h16a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
+    </svg>
+    <h3 class="text-lg font-semibold text-gray-900">Últimos Tickets</h3>
+  </div>
+  
+  <p class="text-sm text-gray-600 mb-4">Historial reciente de tickets de soporte</p>
+  
+  <div class="space-y-4">
+    <div class="space-y-3">
+      {tickets.map(ticket => (
+        <div class={`border-l-4 ${getBorderColor(ticket.priority)} pl-3 py-2`}>
+          <div class="flex items-center justify-between mb-1">
+            <h4 class="text-sm font-medium">{ticket.title}</h4>
+            <span class={`text-xs px-2 py-1 rounded-full ${getStatusStyle(ticket.status)}`}>
+              {ticket.status}
+            </span>
+          </div>
+          <p class="text-xs text-gray-500">
+            Abierto: {ticket.dateOpened}
+            {ticket.dateResolved && ` • Resuelto: ${ticket.dateResolved}`}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</Card>

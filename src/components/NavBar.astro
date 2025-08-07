@@ -3,46 +3,52 @@ export interface Props {
   userName?: string;
 }
 
-const { userName = "Adrian Guerra" } = Astro.props;
+const { userName = "María González" } = Astro.props;
 ---
 
-<nav class="bg-white shadow-sm border-b border-gray-200 px-4 py-3">
+<nav class="bg-white border-b border-gray-200 px-6 py-4">
   <div class="flex items-center justify-between">
     <!-- Logo -->
-    <div class="flex items-center space-x-2">
-      <div class="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
-        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4m16 0l-2-2m0 0l-2 2m2-2v4"/>
         </svg>
+        <h1 class="text-xl font-bold text-gray-900">SoftConsult Pro</h1>
       </div>
-      <span class="text-lg font-semibold text-gray-900">[ NEVEN ]</span>
-    </div>
-    
-    <!-- TItulo Central -->
-    <div class="absolute left-1/2 transform -translate-x-1/2">
-      <h1 class="text-lg font-medium text-gray-700">Panel de cliente</h1>
     </div>
 
-    <!-- Derecha -->
-    <div class="flex items-center space-x-3">
-      <!-- Notificaciones -->
-      <button class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <!-- Right side -->
+    <div class="flex items-center space-x-4">
+      <!-- Notifications -->
+      <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9zM13.73 21a2 2 0 01-3.46 0"/>
         </svg>
       </button>
 
       <!-- User dropdown -->
-      <div class="flex items-center space-x-2">
-        <div class="w-7 h-7 bg-gray-300 rounded-full flex items-center justify-center">
-          <span class="text-xs font-medium text-gray-700">
-            {userName.split(' ').map(n => n[0]).join('')}
-          </span>
+      <div class="relative group">
+        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+            <span class="text-sm font-medium text-gray-700">MG</span>
+          </div>
+          <span class="hidden md:block text-sm font-medium text-gray-700">{userName}</span>
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+        
+        <!-- Dropdown Menu (hidden by default) -->
+        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+          <div class="py-1">
+            <div class="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100">Mi Cuenta</div>
+            <a href="/perfil" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+            <a href="/configuracion" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
+            <div class="border-t border-gray-100"></div>
+            <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar Sesión</a>
+          </div>
         </div>
-        <span class="text-sm font-medium text-gray-700">{userName}</span>
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/>
-        </svg>
       </div>
     </div>
   </div>
