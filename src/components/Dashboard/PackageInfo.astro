@@ -10,39 +10,66 @@ export interface Props {
 }
 
 const { packageName, status, nextBilling, activeServices, support247 } = Astro.props;
+
+// Badge component styles según shadcn/ui
+const getBadgeClasses = (status: string) => {
+  const baseClasses = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+  
+  switch (status.toLowerCase()) {
+    case "activo":
+    case "active":
+      return `${baseClasses} border-transparent bg-green-500 text-green-50 hover:bg-green-500/80`;
+    case "próximo a vencer":
+    case "expiring soon":
+      return `${baseClasses} border-transparent bg-yellow-500 text-yellow-50 hover:bg-yellow-500/80`;
+    case "vencido":
+    case "expired":
+      return `${baseClasses} border-transparent bg-red-500 text-red-50 hover:bg-red-500/80`;
+    default:
+      return `${baseClasses} bg-gray-200 text-gray-700 hover:bg-gray-300`;
+  }
+};
 ---
 
 <Card className="lg:col-span-1">
-  <div class="flex items-center mb-6">
-    <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4m16 0l-2-2m0 0l-2 2m2-2v4"/>
-    </svg>
-    <h3 class="text-lg font-semibold text-gray-900">Paquete Contratado</h3>
-  </div>
-  
-  <div class="space-y-4">
-    <div class="text-center">
-      <h3 class="text-2xl font-bold text-blue-600">{packageName}</h3>
-      <span class="inline-block mt-2 bg-gray-200 text-gray-700 text-sm px-3 py-1 rounded-full">
+  <!-- Card Header -->
+  <div class="p-8 pb-0">
+    <div class="flex items-center justify-between mb-8">
+      <h3 class="text-xl font-bold text-gray-900 flex items-center">
+        <svg class="h-6 w-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2-2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4m16 0l-2-2m0 0l-2 2m2-2v4"/>
+        </svg>
+        Paquete Contratado
+      </h3>
+      <span class={getBadgeClasses(status)}>
         {status}
       </span>
     </div>
-    
-    <!-- Separator -->
-    <div class="border-t border-gray-200"></div>
-    
-    <div class="space-y-2">
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-500">Próxima facturación:</span>
-        <span class="font-medium">{nextBilling}</span>
+  </div>
+  
+  <!-- Card Content -->
+  <div class="px-8 pb-8">
+    <div class="space-y-6">
+      <div class="text-center">
+        <h3 class="text-2xl font-bold text-blue-600">{packageName}</h3>
       </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-500">Servicios incluidos:</span>
-        <span class="font-medium">{activeServices} activos</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-500">Soporte 24/7:</span>
-        <span class="font-medium">{support247 ? 'Incluido' : 'No incluido'}</span>
+      
+      <!-- Separator -->
+      <div class="border-t border-gray-200"></div>
+      
+      <div class="space-y-4">
+        <div class="flex justify-between text-base">
+          <span class="text-gray-500">Próxima facturación:</span>
+          <span class="font-medium text-gray-900">{nextBilling}</span>
+        </div>
+        <div class="flex justify-between text-base">
+          <span class="text-gray-500">Servicios incluidos:</span>
+          <span class="font-medium text-gray-900">{activeServices} activos</span>
+        </div>
+        <div class="flex justify-between text-base">
+          <span class="text-gray-500">Soporte 24/7:</span>
+          <span class="font-medium text-gray-900">{support247 ? 'Incluido' : 'No incluido'}</span>
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,206 @@
+{
+  "profile": {
+    "companyInfo": {
+      "companyName": "TechCorp Solutions S.A. de C.V.",
+      "businessName": "TechCorp Solutions",
+      "rfc": "TCS240115ABC",
+      "taxRegime": "Régimen General de Ley Personas Morales",
+      "industry": "Tecnología y Desarrollo de Software",
+      "companySize": "51-200 empleados",
+      "website": "https://www.techcorp-solutions.com",
+      "establishedYear": "2018",
+      "legalRepresentative": "Juan Carlos Hernández López",
+      "companyType": "Sociedad Anónima de Capital Variable"
+    },
+    "primaryContact": {
+      "name": "María González Rodríguez",
+      "position": "Directora de Tecnología e Innovación",
+      "email": "maria.gonzalez@techcorp.com",
+      "phone": "+52 55 1234 5678",
+      "mobile": "+52 55 9876 5432",
+      "extension": "1001",
+      "department": "Tecnología",
+      "directReports": 15,
+      "yearsWithCompany": 6
+    },
+    "addresses": {
+      "fiscal": {
+        "street": "Av. Insurgentes Sur 1234, Torre Corporativa, Piso 8",
+        "neighborhood": "Del Valle Centro",
+        "city": "Ciudad de México",
+        "state": "CDMX",
+        "zipCode": "03100",
+        "country": "México",
+        "coordinates": {
+          "latitude": "19.4042",
+          "longitude": "-99.1719"
+        }
+      },
+      "delivery": {
+        "street": "Av. Paseo de la Reforma 567, Edificio Central, Piso 15",
+        "neighborhood": "Juárez",
+        "city": "Ciudad de México",
+        "state": "CDMX",
+        "zipCode": "06600",
+        "country": "México",
+        "coordinates": {
+          "latitude": "19.4285",
+          "longitude": "-99.1419"
+        }
+      }
+    },
+    "additionalContacts": [
+      {
+        "id": "CONT-001",
+        "name": "Roberto Silva Martínez",
+        "position": "Gerente de Sistemas e Infraestructura",
+        "email": "roberto.silva@techcorp.com",
+        "phone": "+52 55 1111 2222",
+        "mobile": "+52 55 8888 9999",
+        "department": "Infraestructura IT",
+        "area": "Tecnología",
+        "yearsWithCompany": 4,
+        "certifications": ["AWS Solutions Architect", "Microsoft Azure Administrator"]
+      },
+      {
+        "id": "CONT-002",
+        "name": "Ana Martínez López",
+        "position": "Coordinadora Senior de Proyectos",
+        "email": "ana.martinez@techcorp.com",
+        "phone": "+52 55 3333 4444",
+        "mobile": "+52 55 7777 6666",
+        "department": "Gestión de Proyectos",
+        "area": "Operaciones",
+        "yearsWithCompany": 3,
+        "certifications": ["PMP", "Scrum Master", "ITIL Foundation"]
+      },
+      {
+        "id": "CONT-003",
+        "name": "Carlos Eduardo Ramírez",
+        "position": "Director Financiero",
+        "email": "carlos.ramirez@techcorp.com",
+        "phone": "+52 55 5555 6666",
+        "mobile": "+52 55 4444 3333",
+        "department": "Finanzas",
+        "area": "Administración",
+        "yearsWithCompany": 8,
+        "certifications": ["CPA", "MBA"]
+      }
+    ],
+    "accountInfo": {
+      "clientId": "CLI-2024-001234",
+      "accountManager": {
+        "name": "Carlos Mendoza Silva",
+        "email": "carlos.mendoza@softconsult.com",
+        "phone": "+52 55 2468 1357",
+        "mobile": "+52 55 1357 2468",
+        "position": "Senior Account Manager",
+        "yearsOfExperience": 12,
+        "specialization": "Enterprise Technology Solutions"
+      },
+      "registrationDate": "15 Enero 2024",
+      "lastUpdate": "28 Enero 2024",
+      "accountStatus": "Activo",
+      "creditRating": "AAA",
+      "preferredLanguage": "Español",
+      "timeZone": "America/Mexico_City"
+    },
+    "contractInfo": {
+      "contractId": "CNT-2024-5678",
+      "contractStartDate": "01 Febrero 2024",
+      "contractEndDate": "31 Enero 2025",
+      "contractType": "Anual con renovación automática",
+      "renewalNotice": "90 días antes del vencimiento",
+      "terminationClause": "30 días de aviso previo",
+      "governingLaw": "Leyes de los Estados Unidos Mexicanos",
+      "signedBy": "Juan Carlos Hernández López",
+      "witnessedBy": "María González Rodríguez",
+      "digitalSignature": true,
+      "lastAmendment": "15 Enero 2024"
+    },
+    "planInfo": {
+      "currentPlan": "Enterprise Pro Plus",
+      "planStatus": "Activo",
+      "planCategory": "Premium",
+      "monthlyValue": 45000.00,
+      "annualValue": 540000.00,
+      "currency": "MXN",
+      "paymentMethod": "Transferencia Bancaria",
+      "billingCycle": "Mensual",
+      "nextBilling": "15 Febrero 2024",
+      "autoRenewal": true,
+      "discountApplied": 10,
+      "originalPrice": 600000.00,
+      "paymentTerms": "Net 15",
+      "invoiceFormat": "XML (CFDI 4.0)"
+    },
+    "bankingInfo": {
+      "primary": {
+        "bankName": "BBVA México",
+        "bankCode": "012",
+        "accountNumber": "****-****-****-1234",
+        "accountType": "Cuenta de Cheques Empresarial",
+        "clabe": "012180001234567890",
+        "swift": "BCMRMXMM",
+        "accountHolder": "TechCorp Solutions S.A. de C.V.",
+        "currency": "MXN",
+        "status": "Activa"
+      },
+      "secondary": {
+        "bankName": "Santander México",
+        "bankCode": "014",
+        "accountNumber": "****-****-****-5678",
+        "accountType": "Cuenta de Inversión",
+        "clabe": "014180005678901234",
+        "swift": "BMSXMXMM",
+        "accountHolder": "TechCorp Solutions S.A. de C.V.",
+        "currency": "USD",
+        "status": "Activa"
+      }
+    },
+    "preferences": {
+      "communicationMethod": "Email",
+      "reportingFrequency": "Mensual",
+      "notificationSettings": {
+        "emailNotifications": true,
+        "smsNotifications": true,
+        "systemAlerts": true,
+        "marketingEmails": false
+      },
+      "supportLevel": "Premium 24/7",
+      "escalationPath": ["Account Manager", "Technical Director", "VP of Customer Success"],
+      "businessHours": {
+        "timezone": "CST",
+        "monday": "09:00-18:00",
+        "tuesday": "09:00-18:00",
+        "wednesday": "09:00-18:00",
+        "thursday": "09:00-18:00",
+        "friday": "09:00-18:00",
+        "saturday": "Cerrado",
+        "sunday": "Cerrado"
+      }
+    },
+    "complianceInfo": {
+      "dataProtection": {
+        "gdprCompliant": true,
+        "dataRetentionPeriod": "7 años",
+        "privacyOfficer": "Ana Martínez López",
+        "lastAudit": "15 Diciembre 2023",
+        "nextAudit": "15 Diciembre 2024"
+      },
+      "financialCompliance": {
+        "taxStatus": "Al corriente",
+        "lastTaxFiling": "31 Marzo 2024",
+        "accountantFirm": "Deloitte México",
+        "auditFirm": "PwC México"
+      }
+    }
+  },
+  "meta": {
+    "lastSync": "2024-01-28T10:30:00Z",
+    "apiVersion": "v2.1",
+    "dataSource": "ERP-CRM-Integration",
+    "cacheExpiry": "2024-01-28T18:00:00Z",
+    "checksumVerified": true
+  }
+}

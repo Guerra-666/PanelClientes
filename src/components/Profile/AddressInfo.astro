@@ -1,0 +1,78 @@
+---
+import Card from "../Card.astro";
+
+export interface Props {
+  fiscalAddress: {
+    street: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  deliveryAddress: {
+    street: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+}
+
+const { fiscalAddress, deliveryAddress } = Astro.props;
+---
+
+<Card>
+  <div class="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 border-b border-gray-200">
+    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
+      <svg class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Direcciones
+    </h3>
+  </div>
+  
+  <div class="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-5 lg:space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+      <div>
+        <label class="text-sm sm:text-base font-medium text-gray-500 flex items-center mb-2 sm:mb-3">
+          <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          Dirección Fiscal
+        </label>
+        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg space-y-1.5 sm:space-y-2">
+          <p class="text-sm sm:text-base text-gray-900 break-words">{fiscalAddress.street}</p>
+          <p class="text-sm sm:text-base text-gray-900 break-words">{fiscalAddress.neighborhood}</p>
+          <p class="text-sm sm:text-base text-gray-900 break-words">
+            {fiscalAddress.city}, {fiscalAddress.state}
+          </p>
+          <p class="text-sm sm:text-base text-gray-900 break-words">
+            C.P. {fiscalAddress.zipCode}, {fiscalAddress.country}
+          </p>
+        </div>
+      </div>
+      
+      <div>
+        <label class="text-sm sm:text-base font-medium text-gray-500 flex items-center mb-2 sm:mb-3">
+          <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+          Dirección de Entrega
+        </label>
+        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg space-y-1.5 sm:space-y-2">
+          <p class="text-sm sm:text-base text-gray-900 break-words">{deliveryAddress.street}</p>
+          <p class="text-sm sm:text-base text-gray-900 break-words">{deliveryAddress.neighborhood}</p>
+          <p class="text-sm sm:text-base text-gray-900 break-words">
+            {deliveryAddress.city}, {deliveryAddress.state}
+          </p>
+          <p class="text-sm sm:text-base text-gray-900 break-words">
+            C.P. {deliveryAddress.zipCode}, {deliveryAddress.country}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Card>

@@ -13,52 +13,64 @@ export interface Props {
 
 const { services } = Astro.props;
 
-const getStatusStyle = (status: string) => {
-  switch(status) {
-    case 'Activo': return 'bg-blue-600 text-white';
-    case 'Entregado': return 'border border-gray-400 text-gray-600 bg-transparent';
-    case 'Inactivo': return 'bg-gray-200 text-gray-700';
-    default: return 'bg-gray-200 text-gray-700';
+// Badge styles según shadcn/ui
+const getStatusBadgeClasses = (status: string) => {
+  const baseClasses = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+  
+  switch (status) {
+    case "Activo":
+      return `${baseClasses} border-transparent bg-green-500 text-green-50 hover:bg-green-500/80`;
+    case "Entregado":
+      return `${baseClasses} border border-gray-400 text-gray-600 bg-transparent hover:bg-gray-50`;
+    case "Inactivo":
+      return `${baseClasses} bg-gray-200 text-gray-700 hover:bg-gray-300`;
+    default:
+      return `${baseClasses} bg-gray-200 text-gray-700 hover:bg-gray-300`;
   }
 };
 ---
 
-<Card>
-  <div class="flex items-center mb-4">
-    <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
-    </svg>
-    <h3 class="text-lg font-semibold text-gray-900">Servicios Activos</h3>
+<Card className="lg:col-span-3">
+  <!-- Card Header -->
+  <div class="p-8 pb-0">
+    <h3 class="text-xl font-bold text-gray-900 flex items-center mb-3">
+      <svg class="h-6 w-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Servicios Activos
+    </h3>
+    <p class="text-base text-muted-foreground mb-8">Estado de todos los servicios contratados</p>
   </div>
   
-  <p class="text-sm text-gray-600 mb-6">Estado actual de todos tus servicios contratados</p>
-  
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {services.map(service => (
-      <Card shadow={false} className="border border-gray-200">
-        <div class="p-4">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <h4 class="font-semibold text-gray-900">{service.name}</h4>
-              <p class="text-sm text-gray-600">{service.description}</p>
+  <!-- Card Content -->
+  <div class="px-8 pb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {services.map((service) => (
+        <div class="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-colors">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3 mb-3">
+                <h4 class="text-lg font-semibold text-gray-900">{service.name}</h4>
+                <span class={getStatusBadgeClasses(service.status)}>
+                  {service.status}
+                </span>
+              </div>
+              <p class="text-base text-gray-600">{service.description}</p>
             </div>
-            <span class={`text-xs px-2 py-1 rounded-full ${getStatusStyle(service.status)}`}>
-              {service.status}
-            </span>
           </div>
-
-          <div class="space-y-2">
-            <div class="flex justify-between text-sm">
-              <span class="text-gray-500">Fecha de contratación:</span>
-              <span class="font-medium">{service.startDate}</span>
+          
+          <div class="space-y-3 text-base">
+            <div class="flex justify-between">
+              <span class="text-gray-500">Inicio:</span>
+              <span class="font-medium text-gray-900">{service.startDate}</span>
             </div>
-            <div class="flex justify-between text-sm">
-              <span class="text-gray-500">Fecha de término:</span>
-              <span class="font-medium">{service.endDate}</span>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Fin:</span>
+              <span class="font-medium text-gray-900">{service.endDate}</span>
             </div>
           </div>
         </div>
-      </Card>
-    ))}
+      ))}
+    </div>
   </div>
 </Card>

@@ -1,0 +1,192 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PackageCard from "../components/Services/PackageCard.astro";
+import ServiceCard from "../components/Services/ServiceCard.astro";
+import BillingSummary from "../components/Services/BillingSummary.astro";
+
+// Definir la página actual
+const currentPage = "servicios";
+
+// Simular llamada a API para obtener datos de servicios
+async function fetchServicesData() {
+  try {
+    // Simular delay de API real
+    await new Promise(resolve => setTimeout(resolve, 110));
+    
+    // Simular logs de API
+    console.log("🚀 Fetching services data from API...");
+    console.log("📍 API Endpoint: /api/services/client-services");
+    
+    // En un entorno real, esto sería una llamada fetch() como:
+    // const response = await fetch('/api/services/client-services');
+    // const data = await response.json();
+    
+    // Para esta simulación, cargamos desde un archivo JSON local
+    const servicesData = await import("../data/servicesData.json");
+    
+    console.log("✅ Services data loaded successfully");
+    console.log("📊 Services summary:", {
+      packages: servicesData.default.services.contractedPackages.length,
+      individualServices: servicesData.default.services.individualServices.length,
+      totalMonthly: servicesData.default.services.billing.summary.totalMonthly
+    });
+    
+    return servicesData.default;
+  } catch (error) {
+    console.error("❌ Error al cargar datos de servicios:", error);
+    
+    // Datos fallback en caso de error de API
+    return {
+      services: {
+        contractedPackages: [],
+        individualServices: [],
+        billing: {
+          summary: {
+            totalMonthly: 0,
+            currency: "MXN",
+            activeServices: 0,
+            activePackages: 0,
+            nextBillingDate: "N/A",
+            paymentMethod: "N/A"
+          },
+          taxes: {
+            subtotal: 0,
+            iva: 0,
+            total: 0
+          }
+        }
+      }
+    };
+  }
+}
+
+// Obtener datos de la "API"
+const apiResponse = await fetchServicesData();
+const servicesData = apiResponse.services;
+
+// Mapear datos para compatibilidad con componentes
+const contractedPackages = servicesData.contractedPackages.map(pkg => ({
+  id: pkg.id,
+  name: pkg.name,
+  status: pkg.status,
+  description: pkg.description,
+  monthlyPrice: pkg.monthlyPrice,
+  currency: pkg.currency,
+  contractDate: pkg.contractDate,
+  nextBilling: pkg.nextBilling,
+  remainingMonths: pkg.remainingMonths,
+  includedServices: pkg.includedServices.map(service => ({
+    name: service.name,
+    description: service.description,
+    details: service.details
+  }))
+}));
+
+const individualServices = servicesData.individualServices.map(service => ({
+  id: service.id,
+  name: service.name,
+  status: service.status,
+  description: service.description,
+  monthlyPrice: service.monthlyPrice,
+  totalPrice: service.totalPrice,
+  currency: service.currency,
+  contractDate: service.contractDate,
+  nextBilling: service.nextBilling,
+  autoRenewal: service.autoRenewal,
+  features: service.features,
+  progress: service.progress,
+  estimatedCompletion: service.estimatedCompletion
+}));
+
+const billingData = {
+  summary: servicesData.billing.summary,
+  taxes: servicesData.billing.taxes
+};
+---
+
+<Layout currentPage={currentPage}>
+  <!-- Header Section -->
+  <div class="mb-6 sm:mb-8 lg:mb-10">
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">Mis Servicios Contratados</h2>
+    <p class="text-sm sm:text-base text-gray-600">Servicios activos y información de facturación</p>
+  </div>
+
+  <!-- Paquetes Contratados -->
+  {contractedPackages.length > 0 && (
+    <div class="mb-6 sm:mb-8 lg:mb-10">
+      <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Paquetes Contratados</h3>
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+        {contractedPackages.map(pkg => (
+          <PackageCard package={pkg} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Servicios Individuales -->
+  {individualServices.length > 0 && (
+    <div class="mb-6 sm:mb-8 lg:mb-10">
+      <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Servicios Individuales</h3>
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+        {individualServices.map(service => (
+          <ServiceCard service={service} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Resumen de Facturación -->
+  <BillingSummary billing={billingData} />
+</Layout>
+
+<!--
+=== SIMULACIÓN DE API - SERVICIOS ===
+
+Esta página simula la integración con una API REST para obtener datos completos de servicios y facturación.
+
+📂 ARCHIVO DE DATOS: src/data/servicesData.json
+- Estructura detallada con paquetes contratados y servicios individuales
+- Incluye: precios, fechas, características, progreso de proyectos y facturación
+- Datos expandidos con información de billing, impuestos y métodos de pago
+
+🔄 FUNCIÓN fetchServicesData():
+- Simula el delay de una llamada HTTP real (110ms)
+- En producción, reemplazar con: fetch('/api/services/client-services')
+- Manejo robusto de errores con datos fallback
+- Logs detallados para debugging y monitoreo
+
+📊 PROCESAMIENTO DE DATOS:
+- Mapeo inteligente desde estructura JSON a formato de componentes
+- Separación clara entre paquetes y servicios individuales
+- Cálculo automático de impuestos y totales
+- Compatibilidad completa con interfaces TypeScript
+
+🎯 COMPONENTES ESPECIALIZADOS:
+- PackageCard: Tarjetas para paquetes contratados con servicios incluidos
+- ServiceCard: Servicios individuales con progreso y características
+- BillingSummary: Resumen financiero con desglose de impuestos
+
+📈 CARACTERÍSTICAS AVANZADAS:
+| Funcionalidad | Descripción |
+|---------------|-------------|
+| **Paquetes** | Servicios agrupados con precios preferenciales |
+| **Servicios individuales** | Servicios específicos con facturación separada |
+| **Proyectos** | Servicios con progreso y milestones |
+| **Facturación** | Cálculo automático de IVA y totales |
+| **Renovaciones** | Control de renovación automática |
+
+🔒 DATOS EMPRESARIALES:
+- Información detallada de cada servicio/paquete
+- Fechas de contratación y próximas facturas
+- Progreso de proyectos en tiempo real
+- Desglose fiscal completo (subtotal + IVA)
+- Historial de servicios y upgrades disponibles
+
+🚀 MIGRACIÓN A API REAL:
+1. Endpoint de servicios activos: `/api/services/active`
+2. Endpoint de facturación: `/api/billing/summary`
+3. Endpoint de progreso: `/api/projects/status`
+4. Cache inteligente para datos de facturación
+5. Notificaciones de próximos vencimientos
+6. Dashboard de renovaciones y upgrades
+-->

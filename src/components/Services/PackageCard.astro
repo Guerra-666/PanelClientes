@@ -1,0 +1,103 @@
+---
+import Card from "../Card.astro";
+
+export interface Props {
+  package: {
+    id: string;
+    name: string;
+    status: string;
+    description: string;
+    monthlyPrice: number;
+    currency: string;
+    contractDate: string;
+    nextBilling: string;
+    remainingMonths: number;
+    includedServices: Array<{
+      name: string;
+      description: string;
+      details?: any;
+    }>;
+  };
+}
+
+const { package: pkg } = Astro.props;
+
+// Función para formatear precio
+function formatPrice(amount: number, currency: string): string {
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: currency
+  }).format(amount);
+}
+
+// Badge styles para status
+const getStatusBadge = (status: string) => {
+  const baseClasses = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold";
+  
+  switch (status) {
+    case "Activo":
+      return `${baseClasses} bg-green-100 text-green-800`;
+    case "Pendiente":
+      return `${baseClasses} bg-yellow-100 text-yellow-800`;
+    case "Pausado":
+      return `${baseClasses} bg-gray-100 text-gray-800`;
+    default:
+      return `${baseClasses} bg-gray-100 text-gray-800`;
+  }
+};
+---
+
+<Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
+  <div class="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-4 sm:mb-6">
+      <div class="flex items-start space-x-3 sm:space-x-4">
+        <div class="p-2 sm:p-3 bg-blue-100 rounded-full flex-shrink-0">
+          <svg class="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <span class={getStatusBadge(pkg.status)}>{pkg.status}</span>
+          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mt-1 sm:mt-2">{pkg.name}</h3>
+          <p class="text-sm sm:text-base text-gray-600 mt-1">{pkg.description}</p>
+        </div>
+      </div>
+      <div class="text-center sm:text-right flex-shrink-0">
+        <p class="text-xl sm:text-2xl font-bold text-blue-600">{formatPrice(pkg.monthlyPrice, pkg.currency)}</p>
+        <p class="text-xs sm:text-sm text-gray-600">por mes</p>
+      </div>
+    </div>
+
+    <!-- Información de vigencia -->
+    <div class="bg-white/70 p-3 sm:p-4 rounded-lg space-y-1.5 sm:space-y-2 mb-4 sm:mb-6">
+      <div class="flex justify-between text-xs sm:text-sm">
+        <span class="text-gray-600">Fecha de contratación:</span>
+        <span class="font-medium">{pkg.contractDate}</span>
+      </div>
+      <div class="flex justify-between text-xs sm:text-sm">
+        <span class="text-gray-600">Próxima facturación:</span>
+        <span class="font-medium">{pkg.nextBilling}</span>
+      </div>
+      <div class="flex justify-between text-xs sm:text-sm">
+        <span class="text-gray-600">Vigencia:</span>
+        <span class="font-medium text-green-600">{pkg.remainingMonths} meses restantes</span>
+      </div>
+    </div>
+
+    <!-- Servicios incluidos -->
+    <div class="space-y-3 sm:space-y-4">
+      <h4 class="font-semibold text-sm sm:text-base text-gray-700">Servicios incluidos:</h4>
+      <div class="space-y-2 sm:space-y-3">
+        {pkg.includedServices.map(service => (
+          <div class="flex items-start space-x-2 sm:space-x-3">
+            <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-600 rounded-full mt-1.5 sm:mt-2 flex-shrink-0"></div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs sm:text-sm font-medium text-gray-900">{service.name}</p>
+              <p class="text-xs sm:text-sm text-gray-600 mt-0.5">{service.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</Card>

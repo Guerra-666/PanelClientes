@@ -1,0 +1,283 @@
+{
+  "services": {
+    "contractedPackages": [
+      {
+        "id": "PKG-001",
+        "name": "Paquete Esencial",
+        "type": "package",
+        "status": "Activo",
+        "description": "Presencia digital básica para PyMEs con soporte técnico fundamental",
+        "monthlyPrice": 24999.00,
+        "currency": "MXN",
+        "contractDate": "01 Febrero 2024",
+        "nextBilling": "01 Marzo 2024",
+        "remainingMonths": 12,
+        "autoRenewal": true,
+        "category": "Digital Presence",
+        "priority": "standard",
+        "includedServices": [
+          {
+            "id": "SRV-WEB-001",
+            "name": "Sitio web estático",
+            "description": "5 páginas/secciones, diseño responsive",
+            "details": {
+              "pages": 5,
+              "responsive": true,
+              "cms": false,
+              "customDesign": true
+            }
+          },
+          {
+            "id": "SRV-DOM-001",
+            "name": "Configuración de dominio y correo empresarial",
+            "description": "Dominio personalizado + 3 cuentas de correo",
+            "details": {
+              "domain": "techcorp-solutions.com",
+              "emailAccounts": 3,
+              "storage": "10GB por cuenta"
+            }
+          },
+          {
+            "id": "SRV-CONS-001",
+            "name": "Consultoría IT inicial",
+            "description": "Diagnóstico tecnológico completo",
+            "details": {
+              "hours": 4,
+              "deliverables": ["Diagnóstico tecnológico", "Plan de mejoras", "Recomendaciones"]
+            }
+          },
+          {
+            "id": "SRV-HOST-001",
+            "name": "Hosting y seguridad",
+            "description": "Certificado SSL, Dominio y Hosting básico por 12 meses",
+            "details": {
+              "ssl": true,
+              "hosting": "Básico - 5GB",
+              "bandwidth": "Ilimitado",
+              "uptime": "99.9%"
+            }
+          },
+          {
+            "id": "SRV-SUP-001",
+            "name": "Soporte técnico remoto",
+            "description": "Lun-Vie 9:00-18:00, respuesta en 4 horas hábiles",
+            "details": {
+              "schedule": "Lun-Vie 9:00-18:00",
+              "responseTime": "4 horas hábiles",
+              "channels": ["Email", "Teléfono", "Chat"]
+            }
+          }
+        ],
+        "billing": {
+          "frequency": "monthly",
+          "method": "Transferencia Bancaria",
+          "invoiceFormat": "CFDI 4.0",
+          "paymentTerms": "Net 15"
+        },
+        "technicalContact": "Roberto Silva Martínez",
+        "accountManager": "Carlos Mendoza Silva"
+      }
+    ],
+    "individualServices": [
+      {
+        "id": "SRV-MAINT-001",
+        "name": "Mantenimiento Web Premium",
+        "type": "individual",
+        "status": "Activo",
+        "description": "Servicio individual de mantenimiento avanzado y optimización continua",
+        "monthlyPrice": 5500.00,
+        "currency": "MXN",
+        "contractDate": "15 Enero 2024",
+        "nextBilling": "15 Marzo 2024",
+        "autoRenewal": true,
+        "category": "Maintenance",
+        "priority": "high",
+        "features": [
+          {
+            "name": "Actualizaciones de seguridad",
+            "description": "Actualizaciones semanales de seguridad y parches críticos",
+            "frequency": "Semanal"
+          },
+          {
+            "name": "Respaldos automatizados",
+            "description": "Respaldos diarios con retención de 30 días",
+            "frequency": "Diario"
+          },
+          {
+            "name": "Soporte técnico prioritario",
+            "description": "Hasta 5 horas mensuales de soporte especializado",
+            "allocation": "5 horas/mes"
+          },
+          {
+            "name": "Monitoreo de rendimiento",
+            "description": "Supervisión continua 24/7 con alertas automáticas",
+            "coverage": "24/7"
+          },
+          {
+            "name": "Reportes mensuales",
+            "description": "Informes detallados de rendimiento, seguridad y mejoras",
+            "deliverable": "Reporte PDF mensual"
+          }
+        ],
+        "billing": {
+          "frequency": "monthly",
+          "method": "Transferencia Bancaria",
+          "invoiceFormat": "CFDI 4.0",
+          "paymentTerms": "Net 15"
+        },
+        "technicalContact": "Ana Martínez López",
+        "accountManager": "Carlos Mendoza Silva"
+      },
+      {
+        "id": "SRV-CLOUD-001",
+        "name": "Consultoría Cloud AWS",
+        "type": "project",
+        "status": "En Progreso",
+        "description": "Migración y optimización de infraestructura en Amazon Web Services",
+        "totalPrice": 75000.00,
+        "currency": "MXN",
+        "contractDate": "01 Febrero 2024",
+        "estimatedCompletion": "31 Mayo 2024",
+        "progress": 65,
+        "category": "Cloud Migration",
+        "priority": "high",
+        "milestones": [
+          {
+            "name": "Análisis de infraestructura actual",
+            "status": "Completado",
+            "completionDate": "15 Febrero 2024",
+            "description": "Evaluación completa de sistemas existentes"
+          },
+          {
+            "name": "Diseño de arquitectura AWS",
+            "status": "Completado", 
+            "completionDate": "01 Marzo 2024",
+            "description": "Arquitectura optimizada para AWS"
+          },
+          {
+            "name": "Migración de datos y aplicaciones",
+            "status": "En Progreso",
+            "expectedDate": "15 Abril 2024",
+            "description": "Transferencia gradual de sistemas críticos"
+          },
+          {
+            "name": "Pruebas y optimización",
+            "status": "Pendiente",
+            "expectedDate": "15 Mayo 2024",
+            "description": "Testing exhaustivo y ajustes finales"
+          },
+          {
+            "name": "Capacitación del equipo",
+            "status": "Pendiente",
+            "expectedDate": "31 Mayo 2024",
+            "description": "Training para el equipo técnico interno"
+          }
+        ],
+        "billing": {
+          "frequency": "milestone",
+          "method": "Transferencia Bancaria",
+          "invoiceFormat": "CFDI 4.0",
+          "paymentTerms": "Net 30"
+        },
+        "technicalContact": "Roberto Silva Martínez",
+        "accountManager": "Carlos Mendoza Silva",
+        "projectManager": "Miguel Hernández"
+      }
+    ],
+    "billing": {
+      "summary": {
+        "totalMonthly": 30499.00,
+        "currency": "MXN",
+        "activeServices": 2,
+        "activePackages": 1,
+        "nextBillingDate": "15 Marzo 2024",
+        "paymentMethod": "Transferencia Bancaria",
+        "billingContact": "María González Rodríguez"
+      },
+      "breakdown": [
+        {
+          "item": "Paquete Esencial",
+          "amount": 24999.00,
+          "type": "package",
+          "frequency": "monthly"
+        },
+        {
+          "item": "Mantenimiento Web Premium",
+          "amount": 5500.00,
+          "type": "service",
+          "frequency": "monthly"
+        }
+      ],
+      "taxes": {
+        "iva": 4879.84,
+        "subtotal": 30499.00,
+        "total": 35378.84
+      }
+    },
+    "serviceHistory": [
+      {
+        "date": "15 Enero 2024",
+        "action": "Contratación",
+        "service": "Mantenimiento Web Premium",
+        "description": "Activación del servicio de mantenimiento avanzado"
+      },
+      {
+        "date": "01 Febrero 2024",
+        "action": "Contratación",
+        "service": "Paquete Esencial",
+        "description": "Activación del paquete integral de presencia digital"
+      },
+      {
+        "date": "01 Febrero 2024",
+        "action": "Contratación",
+        "service": "Consultoría Cloud AWS",
+        "description": "Inicio del proyecto de migración a la nube"
+      },
+      {
+        "date": "15 Febrero 2024",
+        "action": "Milestone",
+        "service": "Consultoría Cloud AWS",
+        "description": "Completado análisis de infraestructura actual"
+      },
+      {
+        "date": "01 Marzo 2024",
+        "action": "Milestone",
+        "service": "Consultoría Cloud AWS",
+        "description": "Completado diseño de arquitectura AWS"
+      }
+    ],
+    "availableUpgrades": [
+      {
+        "id": "UPG-001",
+        "name": "Paquete Profesional",
+        "description": "Upgrade a paquete con más funcionalidades",
+        "additionalCost": 15000.00,
+        "features": [
+          "CMS personalizado",
+          "E-commerce básico",
+          "10 cuentas de correo adicionales",
+          "Soporte prioritario 24/7"
+        ]
+      },
+      {
+        "id": "UPG-002",
+        "name": "Monitoreo Avanzado",
+        "description": "Servicio adicional de monitoreo especializado",
+        "additionalCost": 3500.00,
+        "features": [
+          "Alertas en tiempo real",
+          "Dashboard personalizado",
+          "Reportes semanales",
+          "Análisis predictivo"
+        ]
+      }
+    ]
+  },
+  "meta": {
+    "lastSync": "2024-03-07T14:20:00Z",
+    "apiVersion": "v2.1",
+    "dataSource": "Services-Management-System",
+    "cacheExpiry": "2024-03-07T20:00:00Z",
+    "checksumVerified": true
+  }
+}

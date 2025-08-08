@@ -1,0 +1,34 @@
+---
+import Card from "../Card.astro";
+
+export interface Props {
+  contractStartDate: string;
+  contractEndDate: string;
+}
+
+const { contractStartDate, contractEndDate } = Astro.props;
+---
+
+<Card>
+  <div class="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 border-b border-gray-200">
+    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
+      <svg class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-4 15V8a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h4m8-15h2a2 2 0 012 2v8a2 2 0 01-2 2h-4M5 21h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      Información de Contrato
+    </h3>
+  </div>
+  
+  <div class="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-5 lg:space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+      <div class="bg-gray-50 p-4 sm:p-5 rounded-lg">
+        <label class="text-sm sm:text-base text-gray-500 block mb-1 sm:mb-2 font-medium">Inicio de Contrato</label>
+        <p class="font-semibold text-base sm:text-lg text-gray-900">{contractStartDate}</p>
+      </div>
+      <div class="bg-gray-50 p-4 sm:p-5 rounded-lg">
+        <label class="text-sm sm:text-base text-gray-500 block mb-1 sm:mb-2 font-medium">Fin de Contrato</label>
+        <p class="font-semibold text-base sm:text-lg text-gray-900">{contractEndDate}</p>
+      </div>
+    </div>
+  </div>
+</Card>

@@ -1,0 +1,144 @@
+{
+  "client": {
+    "empresa": "TechCorp Solutions S.A. de C.V.",
+    "contacto": "María González Rodríguez",
+    "email": "maria.gonzalez@techcorp.com",
+    "telefono": "+52 55 1234 5678",
+    "fechaRegistro": "15 Enero 2024"
+  },
+  "package": {
+    "name": "Enterprise Pro",
+    "status": "Activo",
+    "nextBilling": "15 Febrero 2024",
+    "activeServices": 4,
+    "support247": true
+  },
+  "tickets": [
+    {
+      "id": "TCK-001",
+      "title": "Error en módulo de facturación electrónica",
+      "status": "En progreso",
+      "priority": "high",
+      "dateOpened": "19 Ene 2024",
+      "assignedTo": "Juan Pérez",
+      "estimatedResolution": "22 Ene 2024"
+    },
+    {
+      "id": "TCK-002",
+      "title": "Configuración de servidor de producción",
+      "status": "Resuelto",
+      "priority": "medium",
+      "dateOpened": "15 Ene 2024",
+      "dateResolved": "16 Ene 2024",
+      "resolvedBy": "Ana López"
+    },
+    {
+      "id": "TCK-003",
+      "title": "Actualización de certificados SSL/TLS",
+      "status": "Resuelto",
+      "priority": "low",
+      "dateOpened": "12 Ene 2024",
+      "dateResolved": "12 Ene 2024",
+      "resolvedBy": "Carlos Martínez"
+    },
+    {
+      "id": "TCK-004",
+      "title": "Optimización de base de datos",
+      "status": "Pendiente",
+      "priority": "medium",
+      "dateOpened": "20 Ene 2024",
+      "assignedTo": "Roberto Silva"
+    }
+  ],
+  "services": [
+    {
+      "id": "SRV-001",
+      "name": "Desarrollo Web Corporativo",
+      "description": "Aplicación web empresarial con React y Node.js",
+      "status": "Activo",
+      "startDate": "15 Ene 2024",
+      "endDate": "15 Ene 2025",
+      "progress": 75,
+      "manager": "Laura García"
+    },
+    {
+      "id": "SRV-002",
+      "name": "Consultoría Cloud AWS",
+      "description": "Migración completa de infraestructura a Amazon Web Services",
+      "status": "Activo",
+      "startDate": "20 Ene 2024",
+      "endDate": "20 Jul 2024",
+      "progress": 45,
+      "manager": "Miguel Hernández"
+    },
+    {
+      "id": "SRV-003",
+      "name": "Soporte Técnico Premium",
+      "description": "Soporte 24/7 con tiempo de respuesta garantizado",
+      "status": "Activo",
+      "startDate": "15 Ene 2024",
+      "endDate": "15 Ene 2025",
+      "progress": 100,
+      "manager": "Sandra Vega"
+    },
+    {
+      "id": "SRV-004",
+      "name": "Hardware - Servidores Dell",
+      "description": "Servidores Dell PowerEdge R740 con configuración personalizada",
+      "status": "Entregado",
+      "startDate": "10 Ene 2024",
+      "endDate": "10 Ene 2027",
+      "progress": 100,
+      "manager": "David Ruiz"
+    },
+    {
+      "id": "SRV-005",
+      "name": "Ciberseguridad Empresarial",
+      "description": "Implementación de firewall y sistemas de monitoreo",
+      "status": "En Configuración",
+      "startDate": "25 Ene 2024",
+      "endDate": "25 Mar 2024",
+      "progress": 30,
+      "manager": "Elena Torres"
+    }
+  ],
+  "stats": {
+    "totalServices": 5,
+    "activeServices": 3,
+    "completedServices": 1,
+    "pendingServices": 1,
+    "openTickets": 2,
+    "resolvedTickets": 2,
+    "totalTickets": 4,
+    "satisfactionScore": 4.8,
+    "accountBalance": 45750.00,
+    "lastPayment": "15 Ene 2024",
+    "nextPaymentDue": "15 Feb 2024"
+  },
+  "notifications": [
+    {
+      "id": "NOT-001",
+      "type": "warning",
+      "title": "Próximo vencimiento de pago",
+      "message": "El pago de $15,250.00 vence el 15 de Febrero",
+      "date": "2024-01-21",
+      "read": false
+    },
+    {
+      "id": "NOT-002",
+      "type": "info",
+      "title": "Mantenimiento programado",
+      "message": "Mantenimiento del servidor programado para el 25 de Enero de 02:00 a 04:00 AM",
+      "date": "2024-01-20",
+      "read": false
+    },
+    {
+      "id": "NOT-003",
+      "type": "success",
+      "title": "Ticket resuelto",
+      "message": "El ticket TCK-002 ha sido resuelto exitosamente",
+      "date": "2024-01-16",
+      "read": true
+    }
+  ]
+}

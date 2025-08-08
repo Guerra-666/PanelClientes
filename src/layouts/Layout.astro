@@ -2,6 +2,13 @@
 import "../styles/global.css";
 import NavBar from '../components/NavBar.astro';
 import Sidebar from '../components/SideBar.astro';
+import { ClientRouter } from "astro:transitions";
+
+export interface Props {
+  currentPage?: string;
+}
+
+const { currentPage = "dashboard" } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -10,28 +17,73 @@ import Sidebar from '../components/SideBar.astro';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NEVEN - Dashboard</title>
+
+	<ClientRouter />
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 min-h-screen">
   <!-- NavBar -->
   <NavBar userName="Adrian Guerra" />
   
-  <div class="flex min-h-screen">
+  <div class="lg:flex min-h-screen">
 	<!-- Sidebar -->
-	<Sidebar />
+	<Sidebar currentPage={currentPage} />
 
 	<!-- Contenido principal -->
-	<main class="flex-1 p-6">
-	  <slot />
+	<main class="flex-1 lg:p-6 p-4 pt-20 lg:pt-6">
+	  <div class="max-w-7xl mx-auto">
+		<slot />
+	  </div>
 	</main>
   </div>
 </body>
 </html>
 
-<style>
+<style is:global>
+	html {
+		font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	}
+	
 	html,
 	body {
 		margin: 0;
 		width: 100%;
 		height: 100%;
+	}
+	
+	/* Colores personalizados para estados */
+	.text-muted-foreground {
+		color: #6B7280;
+	}
+	
+	.border-sidebar {
+		border-color: #E5E7EB;
+	}
+	
+	.bg-sidebar-accent {
+		background-color: #F3F4F6;
+	}
+	
+	.text-sidebar-accent-foreground {
+		color: #374151;
+	}
+	
+	.ring-sidebar-ring {
+		--tw-ring-color: #E5E7EB;
+	}
+	
+	/* Transiciones suaves */
+	.transition-all {
+		transition: all 0.2s ease-linear;
+	}
+	
+	/* Estados hover y focus */
+	.hover-accent:hover {
+		background-color: #F3F4F6;
+		color: #374151;
+	}
+	
+	.focus-ring:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 2px #E5E7EB;
 	}
 </style>

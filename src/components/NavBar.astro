@@ -1,112 +1,160 @@
 ---
 export interface Props {
-  userName?: string;
+  userName: string;
 }
 
-const { userName = "María González" } = Astro.props;
+const { userName } = Astro.props;
 ---
 
-<nav class="bg-white border-b border-gray-200 px-6 py-4">
+<header class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3">
   <div class="flex items-center justify-between">
     <!-- Logo -->
-    <div class="flex items-center space-x-4">
-      <div class="flex items-center space-x-2">
-        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4m16 0l-2-2m0 0l-2 2m2-2v4"/>
-        </svg>
-        <h1 class="text-xl font-bold text-gray-900">SoftConsult Pro</h1>
-      </div>
+    <div class="flex items-center space-x-2">
+      <svg class="h-7 w-7 sm:h-8 sm:w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="text-lg sm:text-xl font-bold text-gray-900">[ NEVEN ]</span>
     </div>
 
-    <!-- Right side -->
-    <div class="flex items-center space-x-4">
-      <!-- Notifications -->
-      <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9zM13.73 21a2 2 0 01-3.46 0"/>
-        </svg>
-      </button>
-
-      <!-- User dropdown -->
-      <div class="relative group">
-        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
-          <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <span class="text-sm font-medium text-gray-700">MG</span>
+    <!-- Seccion derecha-->
+    <div class="flex items-center">
+      <!--  menu dropdown -->
+      <div class="relative">
+        <button 
+          id="userMenuButton"
+          class="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
+          >
+          <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-gray-300 flex items-center justify-center">
+            <span class="text-sm sm:text-base font-medium text-gray-700">
+              {userName.split(' ').map((name: string) => name[0]).join('')}
+            </span>
           </div>
-          <span class="hidden md:block text-sm font-medium text-gray-700">{userName}</span>
-          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/>
+          <span class="text-base font-medium text-gray-900 hidden sm:block">{userName}</span>
+          <svg class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
         </button>
-        
-        <!-- Dropdown Menu (hidden by default) -->
-        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-          <div class="py-1">
-            <div class="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100">Mi Cuenta</div>
-            <a href="/perfil" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
-            <a href="/configuracion" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
+
+        <!-- menu -->
+        <div 
+          id="userDropdown"
+          class="absolute right-0 mt-2 w-48 sm:w-52 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-1 transition-all duration-200 z-50"
+        >
+          <div class="py-1 sm:py-2">
+            <div class="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-500 border-b border-gray-100">
+              Sesión activa
+            </div>
+            
             <div class="border-t border-gray-100"></div>
-            <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar Sesión</a>
+            <button 
+              id="logoutButton"
+              class="flex items-center w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+              Cerrar Sesión
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
-</nav>
+</header>
 
-<!--
+<script is:inline>
+  // Función para inicializar el dropdown
+  function initializeDropdown() {
+    const userMenuButton = document.getElementById('userMenuButton');
+    const userDropdown = document.getElementById('userDropdown');
+    const logoutButton = document.getElementById('logoutButton');
+    
+    if (!userMenuButton || !userDropdown || !logoutButton) {
+      console.log('Elementos del dropdown no encontrados');
+      return;
+    }
 
-=== CONTENEDOR PRINCIPAL (nav) ===
-- bg-white: Fondo blanco
-- shadow-sm: Sombra pequeña y sutil
-- border-b: Borde inferior
-- border-gray-200: Color del borde en gris claro
-- px-4: Padding horizontal de 1rem (16px)
-- py-3: Padding vertical de 0.75rem (12px)
+    // Remover listeners previos para evitar duplicados
+    const newUserMenuButton = userMenuButton.cloneNode(true);
+    const newLogoutButton = logoutButton.cloneNode(true);
+    userMenuButton.parentNode.replaceChild(newUserMenuButton, userMenuButton);
+    logoutButton.parentNode.replaceChild(newLogoutButton, logoutButton);
 
-=== FLEX CONTAINER (div principal) ===
-- flex: Display flex
-- items-center: Alinea elementos verticalmente al centro
-- justify-between: Distribuye espacio entre elementos (logo izquierda, usuario derecha)
+    // Referencias actualizadas
+    const freshUserMenuButton = document.getElementById('userMenuButton');
+    const freshLogoutButton = document.getElementById('logoutButton');
 
-=== SECCIÓN LOGO ===
-- space-x-2: Espacio horizontal de 0.5rem (8px) entre elementos hijos
-- w-7 h-7: Ancho y alto de 1.75rem (28px)
-- bg-blue-600: Fondo azul oscuro
-- rounded-lg: Bordes redondeados grandes
-- text-white: Texto blanco
-- text-lg: Tamaño de texto grande (18px)
-- font-semibold: Peso de fuente semi-bold
-- text-gray-900: Color de texto gris muy oscuro
+    // Asegurar que el dropdown esté cerrado
+    userDropdown.classList.add('opacity-0', 'invisible', 'translate-y-1');
+    userDropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
 
-=== TÍTULO CENTRAL ===
-- absolute: Posicionamiento absoluto
-- left-1/2: Posiciona el elemento al 50% desde la izquierda
-- transform -translate-x-1/2: Mueve el elemento 50% hacia la izquierda de su propio ancho (centrando perfectamente)
-- font-medium: Peso de fuente medium
-- text-gray-700: Color de texto gris medio
+    function toggleDropdown(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const isVisible = userDropdown.classList.contains('opacity-100');
+      
+      if (isVisible) {
+        userDropdown.classList.add('opacity-0', 'invisible', 'translate-y-1');
+        userDropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
+      } else {
+        userDropdown.classList.remove('opacity-0', 'invisible', 'translate-y-1');
+        userDropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
+      }
+    }
 
-=== SECCIÓN DERECHA ===
-- space-x-3: Espacio horizontal de 0.75rem (12px) entre elementos
+    function hideDropdown() {
+      userDropdown.classList.add('opacity-0', 'invisible', 'translate-y-1');
+      userDropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
+    }
 
-=== BOTÓN DE NOTIFICACIONES ===
-- p-1.5: Padding de 0.375rem (6px) en todos los lados
-- text-gray-400: Color de texto gris claro
-- hover:text-gray-600: Al hover, cambia a gris más oscuro
-- hover:bg-gray-100: Al hover, fondo gris muy claro
-- transition-colors: Transición suave en cambios de color
+    function logout(event) {
+      event.preventDefault();
+      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        window.location.href = '/login';
+      }
+    }
 
-=== DROPDOWN DE USUARIO ===
-- w-7 h-7: Avatar de 28px x 28px
-- rounded-full: Bordes completamente redondeados (círculo)
-- text-xs: Tamaño de texto extra pequeño (12px)
-- text-sm: Tamaño de texto pequeño (14px)
+    // Agregar event listeners
+    freshUserMenuButton.addEventListener('click', toggleDropdown);
+    freshLogoutButton.addEventListener('click', logout);
 
-=== SVG ICONS ===
-- w-4 h-4: Iconos de 1rem x 1rem (16px)
-- fill="none": Sin relleno
-- stroke="currentColor": Usa el color del texto actual
-- stroke-linecap="round": Extremos de línea redondeados
-- stroke-linejoin="round": Uniones de línea redondeadas
-- stroke-width="2": Grosor de línea de 2px
--->
+    // Cerrar dropdown al hacer clic fuera
+    const outsideClickHandler = function(event) {
+      const isClickInside = freshUserMenuButton.contains(event.target) || userDropdown.contains(event.target);
+      
+      if (!isClickInside && userDropdown.classList.contains('opacity-100')) {
+        hideDropdown();
+      }
+    };
+
+    // Cerrar dropdown con tecla Escape
+    const keydownHandler = function(event) {
+      if (event.key === 'Escape' && userDropdown.classList.contains('opacity-100')) {
+        hideDropdown();
+      }
+    };
+
+    document.addEventListener('click', outsideClickHandler);
+    document.addEventListener('keydown', keydownHandler);
+
+    console.log('Dropdown inicializado correctamente');
+  }
+
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDropdown);
+  } else {
+    initializeDropdown();
+  }
+
+  // Re-inicializar después de navegaciones de Astro
+  document.addEventListener('astro:after-swap', function() {
+    setTimeout(initializeDropdown, 100);
+  });
+
+  // También intentar con el evento de página cargada
+  document.addEventListener('astro:page-load', function() {
+    setTimeout(initializeDropdown, 100);
+  });
+</script>
