@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tickets</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Tickets</h1>
+        
+        <!-- Navegación -->
+        <div class="navigation">
+            <button onclick="showSection('create')">Crear Ticket</button>
+            <button onclick="showSection('list')">Listar Tickets</button>
+            <button onclick="showSection('status')">Cambiar Estado</button>
+            <button onclick="showSection('messages')">Gestionar Mensajes</button>
+            <button onclick="showSection('delete')">Eliminar Ticket</button>
+        </div>
+
+        <!-- Mensaje de estado -->
+        <div id="message" style="display: none; padding: 10px; margin: 10px 0; border-radius: 4px;"></div>
+
+        <!-- Sección Crear Ticket -->
+        <div id="createSection" class="section" style="display: block;">
+            <h2>Crear Nuevo Ticket</h2>
+            <form id="createForm">
+                <div class="form-group">
+                    <label for="create_empresa_id">Empresa (requerido):</label>
+                    <select id="create_empresa_id" name="empresa_id" required onchange="cargarDatosRelacionados()">
+                        <option value="">Cargando empresas...</option>
+                    </select>
+                    <small style="color: #666;">Seleccione la empresa que reporta el ticket</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_contrato_id">Contrato (opcional):</label>
+                    <select id="create_contrato_id" name="contrato_id" disabled>
+                        <option value="">Primero seleccione una empresa</option>
+                    </select>
+                    <small style="color: #666;">Los contratos se filtrarán según la empresa seleccionada</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_servicio_id">Servicio (opcional):</label>
+                    <select id="create_servicio_id" name="servicio_id" disabled>
+                        <option value="">Primero seleccione una empresa</option>
+                    </select>
+                    <small style="color: #666;">Los servicios se filtrarán según la empresa seleccionada</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_contacto_id">Contacto (opcional):</label>
+                    <select id="create_contacto_id" name="contacto_id" disabled>
+                        <option value="">Primero seleccione una empresa</option>
+                    </select>
+                    <small style="color: #666;">Los contactos se filtrarán según la empresa seleccionada</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_usuario_asignado">Usuario Asignado (opcional):</label>
+                    <select id="create_usuario_asignado" name="usuario_asignado">
+                        <option value="">Cargando usuarios...</option>
+                    </select>
+                    <small style="color: #666;">Usuario del soporte técnico que se asignará al ticket</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_estado_id">Estado Inicial:</label>
+                    <select id="create_estado_id" name="estado_id" required>
+                        <option value="">Seleccionar estado</option>
+                        <option value="1">🟡 En Proceso</option>
+                        <option value="2">🟢 Resuelto</option>
+                    </select>
+                    <small style="color: #666;">Estado inicial del ticket (recomendado: En Proceso)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_categoria">Categoría:</label>
+                    <select id="create_categoria" name="categoria" required>
+                        <option value="">Seleccionar categoría</option>
+                        <option value="Soporte"> Soporte Técnico</option>
+                        <option value="Consulta"> Consulta General</option>
+                        <option value="Incidencia"> Incidencia/Error</option>
+                        <option value="Solicitud"> Solicitud de Servicio</option>
+                        <option value="Mantenimiento"> Mantenimiento</option>
+                        <option value="Configuracion">Configuración</option>
+                    </select>
+                    <small style="color: #666;">Tipo de solicitud o problema reportado</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_asunto">Asunto (requerido):</label>
+                    <input type="text" id="create_asunto" name="asunto" maxlength="200" required 
+                           placeholder="Ej: Error en el sistema de facturación">
+                    <small style="color: #666;">Resumen breve del problema o solicitud (máximo 200 caracteres)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="create_descripcion">Descripción Detallada (requerido):</label>
+                    <textarea id="create_descripcion" name="descripcion" rows="5" required 
+                              placeholder="Describa detalladamente el problema, los pasos que siguió, los mensajes de error que aparecieron, etc."></textarea>
+                    <small style="color: #666;">Proporcione todos los detalles posibles para un mejor diagnóstico</small>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button type="submit">📝 Crear Ticket</button>
+                    <button type="reset" onclick="reiniciarFormulario()">🔄 Limpiar Formulario</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sección Listar Tickets -->
+        <div id="listSection" class="section" style="display: none;">
+            <h2>Lista de Tickets</h2>
+            <button onclick="listarTickets()">Actualizar Lista</button>
+            <div id="tickets-list"></div>
+        </div>
+
+        <!-- Sección Cambiar Estado -->
+        <div id="statusSection" class="section" style="display: none;">
+            <h2>Cambiar Estado de Ticket</h2>
+            <form id="statusForm">
+                <div class="form-group">
+                    <label for="status_ticket_id">ID del Ticket:</label>
+                    <input type="number" id="status_ticket_id" name="ticket_id" required placeholder="Ej: 2">
+                    <small style="color: #666;">Introduce el ID del ticket cuyo estado deseas cambiar</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status_nuevo_estado">Nuevo Estado:</label>
+                    <select id="status_nuevo_estado" name="estado_id" required>
+                        <option value="">Seleccionar nuevo estado</option>
+                        <option value="1"> En Proceso</option>
+                        <option value="2">� Resuelto</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status_usuario_id">ID Usuario (quien realiza el cambio):</label>
+                    <input type="number" id="status_usuario_id" name="usuario_id" required placeholder="Ej: 10" value="10">
+                    <small style="color: #666;">ID del usuario que autoriza el cambio de estado (por defecto: 10)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status_comentario">Comentario (opcional):</label>
+                    <textarea id="status_comentario" name="comentario" rows="3" maxlength="500" placeholder="Describe el motivo del cambio de estado o añade notas adicionales..."></textarea>
+                    <small style="color: #666;">Máximo 500 caracteres</small>
+                </div>
+                
+                <button type="submit">Cambiar Estado</button>
+                <button type="button" onclick="previewEstado()">Vista Previa</button>
+            </form>
+            
+            <div id="preview-estado" style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f8f9fa;">
+                <h4>Vista Previa del Cambio:</h4>
+                <p id="preview-text"></p>
+            </div>
+        </div>
+
+        <!-- Sección Gestionar Mensajes -->
+        <div id="messagesSection" class="section" style="display: none;">
+            <h2>Gestionar Mensajes del Ticket</h2>
+            
+            <div class="messages-controls">
+                <button onclick="showSection('list')" class="btn-back">← Volver a Lista</button>
+                <button onclick="actualizarMensajes()" class="btn-refresh">🔄 Actualizar</button>
+            </div>
+            
+            <div id="ticket-info-messages">
+                <!-- Información del ticket se cargará aquí -->
+            </div>
+            
+            <div class="messages-container-full">
+                <!-- Conversación -->
+                <div class="conversation-panel">
+                    <h3>Conversación</h3>
+                    <div id="conversation-messages" class="conversation-messages">
+                        <!-- Los mensajes se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <!-- Formulario para nuevo mensaje -->
+                <div class="new-message-panel">
+                    <h3>Enviar Mensaje</h3>
+                    <form id="messageForm">
+                        <input type="hidden" id="message_ticket_id" name="ticket_id">
+                        
+                        <div class="form-group">
+                            <label for="message_tipo_remitente">Tipo de Remitente:</label>
+                            <select id="message_tipo_remitente" name="tipo_remitente" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="Soporte">🛠️ Soporte (Personal técnico)</option>
+                                <option value="Cliente">👤 Cliente (Mensaje del cliente)</option>
+                                <option value="Sistema">⚙️ Sistema (Mensaje automático)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message_usuario_id">Usuario ID:</label>
+                            <input type="number" id="message_usuario_id" name="usuario_id" value="10" required>
+                            <small>ID del usuario que envía el mensaje</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message_mensaje">Mensaje:</label>
+                            <textarea id="message_mensaje" name="mensaje" rows="4" required placeholder="Escribe tu mensaje aquí...&#10;&#10;Ejemplos:&#10;- Hola, ¿podrías enviarme una captura de pantalla del error?&#10;- He identificado el problema, estamos trabajando en la solución&#10;- El problema ha sido resuelto, por favor confirma si todo funciona correctamente"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message_archivo_adjunto">Archivo Adjunto (opcional):</label>
+                            <input type="text" id="message_archivo_adjunto" name="archivo_adjunto" placeholder="Nombre del archivo (ej: captura_error.png)">
+                            <small>Indica el nombre del archivo que se adjuntará</small>
+                        </div>
+                        
+                        <div class="message-templates">
+                            <strong>Plantillas Rápidas:</strong>
+                            <button type="button" onclick="usarPlantilla('solicitar_info')">📋 Solicitar Información</button>
+                            <button type="button" onclick="usarPlantilla('captura')">📸 Solicitar Captura</button>
+                            <button type="button" onclick="usarPlantilla('trabajando')">⚙️ Trabajando en Solución</button>
+                            <button type="button" onclick="usarPlantilla('resuelto')">✅ Problema Resuelto</button>
+                        </div>
+                        
+                        <button type="submit">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Ver Historial -->
+        <div id="historialSection" class="section" style="display: none;">
+            <h2>Historial del Ticket</h2>
+            <div class="historial-controls">
+                <button onclick="showSection('list')" class="btn-back">← Volver a Lista</button>
+                <button onclick="copiarHistorial()" class="btn-copy">📋 Copiar JSON</button>
+                <button onclick="descargarHistorial()" class="btn-download">💾 Descargar JSON</button>
+            </div>
+            <div id="historial-info">
+                <h3 id="ticket-info"></h3>
+            </div>
+            <div id="historial-content">
+                <div class="historial-tabs">
+                    <button onclick="mostrarTab('cambios')" id="tab-cambios" class="tab-button active">Cambios de Estado</button>
+                    <button onclick="mostrarTab('mensajes')" id="tab-mensajes" class="tab-button">Mensajes</button>
+                    <button onclick="mostrarTab('json')" id="tab-json" class="tab-button">JSON Completo</button>
+                </div>
+                
+                <div id="tab-content-cambios" class="tab-content active">
+                    <h4>Historial de Cambios de Estado</h4>
+                    <div id="cambios-list"></div>
+                </div>
+                
+                <div id="tab-content-mensajes" class="tab-content">
+                    <h4>Mensajes del Ticket</h4>
+                    <div id="mensajes-list"></div>
+                </div>
+                
+                <div id="tab-content-json" class="tab-content">
+                    <h4>JSON Completo del Historial</h4>
+                    <pre id="json-display"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Eliminar Ticket -->
+        <div id="deleteSection" class="section" style="display: none;">
+            <h2>Eliminar Ticket</h2>
+            <form id="deleteForm">
+                <div class="form-group">
+                    <label for="delete_id">ID del Ticket a eliminar:</label>
+                    <input type="number" id="delete_id" name="id" required>
+                </div>
+                <button type="submit">Eliminar Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://backend-express-c423b4135ed6.herokuapp.com/api';
+
+        // Variables globales para almacenar datos
+        let empresas = [];
+        let contratos = [];
+        let servicios = [];
+        let contactos = [];
+        let usuarios = [];
+
+        // Inicializar formulario al cargar la página
+        function inicializarFormulario() {
+            cargarEmpresas();
+            cargarUsuarios();
+            
+            // Establecer estado por defecto
+            document.getElementById('create_estado_id').value = '1'; // En Proceso por defecto
+        }
+
+        // Cargar empresas
+        async function cargarEmpresas() {
+            const selectEmpresa = document.getElementById('create_empresa_id');
+            selectEmpresa.innerHTML = '<option value="">🔄 Cargando empresas...</option>';
+            
+            try {
+                const response = await fetch(`${API_URL}/empresas`);
+                const result = await response.json();
+                
+                selectEmpresa.innerHTML = '<option value="">Seleccione una empresa</option>';
+                
+                if (response.ok && result.data && result.data.length > 0) {
+                    empresas = result.data;
+                    empresas.forEach(empresa => {
+                        const option = document.createElement('option');
+                        option.value = empresa.id;
+                        option.textContent = `${empresa.nombre} (ID: ${empresa.id}) - ${empresa.rfc}`;
+                        selectEmpresa.appendChild(option);
+                    });
+                    console.log(`✅ ${empresas.length} empresas cargadas`);
+                } else {
+                    selectEmpresa.innerHTML = '<option value="">❌ No hay empresas disponibles</option>';
+                    mostrarMensaje('No se encontraron empresas disponibles', 'error');
+                }
+            } catch (error) {
+                selectEmpresa.innerHTML = '<option value="">❌ Error al cargar empresas</option>';
+                mostrarMensaje('Error al cargar empresas: ' + error.message, 'error');
+            }
+        }
+
+        // Cargar usuarios
+        async function cargarUsuarios() {
+            const selectUsuario = document.getElementById('create_usuario_asignado');
+            selectUsuario.innerHTML = '<option value="">🔄 Cargando usuarios...</option>';
+            
+            try {
+                const response = await fetch(`${API_URL}/usuarios`);
+                const result = await response.json();
+                
+                selectUsuario.innerHTML = '<option value="">Sin asignar (se puede asignar después)</option>';
+                
+                if (response.ok && result.data && result.data.length > 0) {
+                    usuarios = result.data;
+                    usuarios.forEach(usuario => {
+                        const option = document.createElement('option');
+                        option.value = usuario.id;
+                        option.textContent = `${usuario.nombre} (${usuario.rol}) - ID: ${usuario.id}`;
+                        selectUsuario.appendChild(option);
+                    });
+                    console.log(`✅ ${usuarios.length} usuarios cargados`);
+                } else {
+                    console.log('No se encontraron usuarios disponibles');
+                }
+            } catch (error) {
+                selectUsuario.innerHTML = '<option value="">❌ Error al cargar usuarios</option>';
+                mostrarMensaje('Error al cargar usuarios: ' + error.message, 'error');
+            }
+        }
+
+        // Cargar datos relacionados cuando se selecciona una empresa
+        async function cargarDatosRelacionados() {
+            const empresaId = document.getElementById('create_empresa_id').value;
+            
+            if (!empresaId) {
+                // Resetear todos los selects dependientes
+                document.getElementById('create_contrato_id').innerHTML = '<option value="">Primero seleccione una empresa</option>';
+                document.getElementById('create_servicio_id').innerHTML = '<option value="">Primero seleccione una empresa</option>';
+                document.getElementById('create_contacto_id').innerHTML = '<option value="">Primero seleccione una empresa</option>';
+                
+                document.getElementById('create_contrato_id').disabled = true;
+                document.getElementById('create_servicio_id').disabled = true;
+                document.getElementById('create_contacto_id').disabled = true;
+                return;
+            }
+            
+            // Cargar contratos, servicios y contactos en paralelo
+            await Promise.all([
+                cargarContratosPorEmpresa(empresaId),
+                cargarServiciosPorEmpresa(empresaId),
+                cargarContactosPorEmpresa(empresaId)
+            ]);
+        }
+
+        // Cargar contratos por empresa
+        async function cargarContratosPorEmpresa(empresaId) {
+            const selectContrato = document.getElementById('create_contrato_id');
+            selectContrato.innerHTML = '<option value="">🔄 Cargando contratos...</option>';
+            selectContrato.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_URL}/contratos?empresa_id=${empresaId}`);
+                const result = await response.json();
+                
+                selectContrato.innerHTML = '<option value="">Sin contrato específico</option>';
+                
+                if (response.ok && result.data && result.data.length > 0) {
+                    contratos = result.data;
+                    contratos.forEach(contrato => {
+                        const option = document.createElement('option');
+                        option.value = contrato.id;
+                        option.textContent = `${contrato.numero_contrato} - ${contrato.estado} (ID: ${contrato.id}) - $${parseFloat(contrato.precio_final).toLocaleString('es-MX')}`;
+                        selectContrato.appendChild(option);
+                    });
+                    selectContrato.disabled = false;
+                    console.log(`✅ ${contratos.length} contratos cargados para empresa ${empresaId}`);
+                } else {
+                    selectContrato.innerHTML = '<option value="">❌ No hay contratos para esta empresa</option>';
+                    console.log('No se encontraron contratos para la empresa seleccionada');
+                }
+            } catch (error) {
+                selectContrato.innerHTML = '<option value="">❌ Error al cargar contratos</option>';
+                mostrarMensaje('Error al cargar contratos: ' + error.message, 'error');
+            }
+        }
+
+        // Cargar servicios por empresa
+        async function cargarServiciosPorEmpresa(empresaId) {
+            const selectServicio = document.getElementById('create_servicio_id');
+            selectServicio.innerHTML = '<option value="">🔄 Cargando servicios...</option>';
+            selectServicio.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_URL}/servicios?empresa_id=${empresaId}`);
+                const result = await response.json();
+                
+                selectServicio.innerHTML = '<option value="">Sin servicio específico</option>';
+                
+                if (response.ok && result.data && result.data.length > 0) {
+                    servicios = result.data;
+                    servicios.forEach(servicio => {
+                        const option = document.createElement('option');
+                        option.value = servicio.id;
+                        option.textContent = `${servicio.nombre} - ${servicio.estado} (ID: ${servicio.id})`;
+                        if (servicio.precio) {
+                            option.textContent += ` - $${parseFloat(servicio.precio).toLocaleString('es-MX')}`;
+                        }
+                        selectServicio.appendChild(option);
+                    });
+                    selectServicio.disabled = false;
+                    console.log(`✅ ${servicios.length} servicios cargados para empresa ${empresaId}`);
+                } else {
+                    selectServicio.innerHTML = '<option value="">❌ No hay servicios para esta empresa</option>';
+                    console.log('No se encontraron servicios para la empresa seleccionada');
+                }
+            } catch (error) {
+                selectServicio.innerHTML = '<option value="">❌ Error al cargar servicios</option>';
+                mostrarMensaje('Error al cargar servicios: ' + error.message, 'error');
+            }
+        }
+
+        // Cargar contactos por empresa
+        async function cargarContactosPorEmpresa(empresaId) {
+            const selectContacto = document.getElementById('create_contacto_id');
+            selectContacto.innerHTML = '<option value="">🔄 Cargando contactos...</option>';
+            selectContacto.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_URL}/contactos/empresa/${empresaId}`);
+                const result = await response.json();
+                
+                selectContacto.innerHTML = '<option value="">Sin contacto específico</option>';
+                
+                if (response.ok && result.data && result.data.length > 0) {
+                    contactos = result.data;
+                    contactos.forEach(contacto => {
+                        const option = document.createElement('option');
+                        option.value = contacto.id;
+                        const principal = contacto.principal ? ' 👑 PRINCIPAL' : ' 👤 Secundario';
+                        const activo = contacto.activo ? '' : ' (INACTIVO)';
+                        option.textContent = `${contacto.nombre}${principal} - ${contacto.puesto || 'Sin puesto'} (ID: ${contacto.id})${activo}`;
+                        selectContacto.appendChild(option);
+                    });
+                    selectContacto.disabled = false;
+                    console.log(`✅ ${contactos.length} contactos cargados para empresa ${empresaId}`);
+                } else {
+                    selectContacto.innerHTML = '<option value="">❌ No hay contactos para esta empresa</option>';
+                    console.log('No se encontraron contactos para la empresa seleccionada');
+                }
+            } catch (error) {
+                selectContacto.innerHTML = '<option value="">❌ Error al cargar contactos</option>';
+                mostrarMensaje('Error al cargar contactos: ' + error.message, 'error');
+            }
+        }
+
+        // Reiniciar formulario
+        function reiniciarFormulario() {
+            document.getElementById('createForm').reset();
+            
+            // Reestablecer selects dependientes
+            document.getElementById('create_contrato_id').innerHTML = '<option value="">Primero seleccione una empresa</option>';
+            document.getElementById('create_servicio_id').innerHTML = '<option value="">Primero seleccione una empresa</option>';
+            document.getElementById('create_contacto_id').innerHTML = '<option value="">Primero seleccione una empresa</option>';
+            
+            document.getElementById('create_contrato_id').disabled = true;
+            document.getElementById('create_servicio_id').disabled = true;
+            document.getElementById('create_contacto_id').disabled = true;
+            
+            // Establecer estado por defecto
+            document.getElementById('create_estado_id').value = '1';
+            
+            mostrarMensaje('Formulario reiniciado', 'success');
+        }
+
+        // Mostrar secciones
+        function showSection(section) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.style.display = 'none';
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            // Si es la sección de lista, cargar automáticamente
+            if (section === 'list') {
+                listarTickets();
+            }
+        }
+
+        // Mostrar mensajes
+        function mostrarMensaje(mensaje, tipo) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = mensaje;
+            messageDiv.style.display = 'block';
+            messageDiv.className = tipo;
+            
+            if (tipo === 'success') {
+                messageDiv.style.backgroundColor = '#d4edda';
+                messageDiv.style.color = '#155724';
+                messageDiv.style.border = '1px solid #c3e6cb';
+            } else {
+                messageDiv.style.backgroundColor = '#f8d7da';
+                messageDiv.style.color = '#721c24';
+                messageDiv.style.border = '1px solid #f5c6cb';
+            }
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Crear ticket
+        document.getElementById('createForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const ticketData = {};
+            
+            // Validar campos requeridos
+            const empresaId = formData.get('empresa_id');
+            const categoria = formData.get('categoria');
+            const asunto = formData.get('asunto');
+            const descripcion = formData.get('descripcion');
+            const estadoId = formData.get('estado_id');
+            
+            if (!empresaId || !categoria || !asunto || !descripcion || !estadoId) {
+                mostrarMensaje('Error: Todos los campos marcados como requeridos deben ser completados', 'error');
+                return;
+            }
+            
+            // Convertir FormData a objeto y manejar valores opcionales
+            for (let [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    // Convertir IDs numéricos
+                    if (['empresa_id', 'contrato_id', 'servicio_id', 'contacto_id', 'usuario_asignado', 'estado_id'].includes(key)) {
+                        ticketData[key] = parseInt(value);
+                    } else {
+                        ticketData[key] = value.trim();
+                    }
+                }
+            }
+            
+            console.log('Datos del ticket a enviar:', ticketData);
+            
+            try {
+                const response = await fetch(`${API_URL}/tickets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ticketData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensaje(`✅ Ticket creado exitosamente con ID: ${result.data.id}`, 'success');
+                    
+                    // Mostrar información adicional del ticket creado
+                    if (result.data.numero_ticket) {
+                        mostrarMensaje(`🎫 Número de ticket: ${result.data.numero_ticket}`, 'success');
+                    }
+                    
+                    // Reiniciar formulario
+                    reiniciarFormulario();
+                    
+                    // Opcional: Cambiar a la sección de lista después de crear
+                    setTimeout(() => {
+                        showSection('list');
+                    }, 3000);
+                } else {
+                    let errorMessage = result.message || 'Error al crear ticket';
+                    if (result.errors && Array.isArray(result.errors)) {
+                        errorMessage += ': ' + result.errors.join(', ');
+                    }
+                    mostrarMensaje(`❌ Error: ${errorMessage}`, 'error');
+                    console.error('Error del servidor:', result);
+                }
+            } catch (error) {
+                mostrarMensaje('❌ Error de conexión: ' + error.message, 'error');
+                console.error('Error de conexión:', error);
+            }
+        });
+
+        // Listar tickets
+        async function listarTickets() {
+            try {
+                const response = await fetch(`${API_URL}/tickets`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    mostrarListaTickets(result.data);
+                } else {
+                    mostrarMensaje(`Error: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
+            }
+        }
+
+        // Mostrar lista de tickets
+        function mostrarListaTickets(tickets) {
+            const listDiv = document.getElementById('tickets-list');
+            
+            if (!tickets || tickets.length === 0) {
+                listDiv.innerHTML = '<p>No se encontraron tickets.</p>';
+                return;
+            }
+            
+            let html = '<table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">';
+            html += `
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th>ID</th>
+                        <th>Número</th>
+                        <th>Empresa ID</th>
+                        <th>Categoría</th>
+                        <th>Asunto</th>
+                        <th>Estado</th>
+                        <th>Fecha Creación</th>
+                        <th>Fecha Resolución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            tickets.forEach(ticket => {
+                const estadoNombre = getEstadoNombre(ticket.estado_id);
+                const estadoColor = getEstadoColor(ticket.estado_id);
+                
+                html += `
+                    <tr>
+                        <td>${ticket.id}</td>
+                        <td>${ticket.numero_ticket || 'N/A'}</td>
+                        <td>${ticket.empresa_id}</td>
+                        <td>${ticket.categoria || 'N/A'}</td>
+                        <td title="${ticket.asunto}">${ticket.asunto.length > 30 ? ticket.asunto.substring(0, 30) + '...' : ticket.asunto}</td>
+                        <td>
+                            <span style="background-color: ${estadoColor}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+                                ${estadoNombre}
+                            </span>
+                        </td>
+                        <td>${ticket.fecha_creacion ? new Date(ticket.fecha_creacion).toLocaleString() : 'N/A'}</td>
+                        <td>${ticket.fecha_resolucion ? new Date(ticket.fecha_resolucion).toLocaleString() : 'Pendiente'}</td>
+                        <td>
+                            <button onclick="cambiarEstadoRapido(${ticket.id})" class="btn-status" title="Cambiar Estado">
+                                📝
+                            </button>
+                            <button onclick="gestionarMensajes(${ticket.id})" class="btn-messages" title="Gestionar Mensajes">
+                                💬
+                            </button>
+                            <button onclick="verHistorial(${ticket.id})" class="btn-history" title="Ver Historial">
+                                📋
+                            </button>
+                            <button onclick="eliminarTicket(${ticket.id})" class="btn-delete" title="Eliminar Ticket">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            listDiv.innerHTML = html;
+        }
+
+        // Función auxiliar para obtener nombre del estado
+        function getEstadoNombre(estadoId) {
+            const estados = {
+                1: 'En Proceso',
+                2: 'Resuelto'
+            };
+            return estados[estadoId] || `Estado ${estadoId}`;
+        }
+
+        // Función auxiliar para obtener color del estado
+        function getEstadoColor(estadoId) {
+            const colores = {
+                1: '#4ECDC4', // En Proceso
+                2: '#95E1D3'  // Resuelto
+            };
+            return colores[estadoId] || '#6c757d';
+        }
+
+        // Cambiar estado de ticket desde la tabla
+        function cambiarEstadoRapido(ticketId) {
+            document.getElementById('status_ticket_id').value = ticketId;
+            showSection('status');
+            
+            // Scroll hacia el formulario
+            document.getElementById('statusSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Gestionar mensajes del ticket
+        async function gestionarMensajes(ticketId) {
+            try {
+                // Obtener información del ticket
+                const ticketResponse = await fetch(`${API_URL}/tickets/${ticketId}`);
+                const ticketResult = await ticketResponse.json();
+                
+                if (!ticketResponse.ok) {
+                    mostrarMensaje(`Error: ${ticketResult.message}`, 'error');
+                    return;
+                }
+                
+                // Guardar el ID del ticket
+                document.getElementById('message_ticket_id').value = ticketId;
+                window.currentTicketId = ticketId;
+                
+                // Mostrar información del ticket
+                document.getElementById('ticket-info-messages').innerHTML = `
+                    <div class="ticket-info-card">
+                        <h3>Ticket #${ticketResult.data.id} - ${ticketResult.data.numero_ticket}</h3>
+                        <p><strong>Asunto:</strong> ${ticketResult.data.asunto}</p>
+                        <p><strong>Estado:</strong> 
+                            <span style="background-color: ${getEstadoColor(ticketResult.data.estado_id)}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+                                ${getEstadoNombre(ticketResult.data.estado_id)}
+                            </span>
+                        </p>
+                        <p><strong>Empresa:</strong> ${ticketResult.data.empresa_nombre}</p>
+                        <p><strong>Categoría:</strong> ${ticketResult.data.categoria}</p>
+                    </div>
+                `;
+                
+                // Cargar mensajes existentes
+                await cargarMensajesConversacion(ticketId);
+                
+                // Cambiar a la sección de mensajes
+                showSection('messages');
+                
+            } catch (error) {
+                mostrarMensaje('Error al cargar mensajes: ' + error.message, 'error');
+            }
+        }
+
+        // Cargar mensajes de la conversación
+        async function cargarMensajesConversacion(ticketId) {
+            try {
+                const response = await fetch(`${API_URL}/tickets/${ticketId}/messages`);
+                const result = await response.json();
+                
+                const conversationDiv = document.getElementById('conversation-messages');
+                
+                if (!response.ok || !result.data || result.data.length === 0) {
+                    conversationDiv.innerHTML = '<p class="no-messages">No hay mensajes en este ticket. ¡Sé muy especifico con el problema que tienes!</p>';
+                    return;
+                }
+                
+                // Mostrar mensajes en formato conversación
+                let html = '';
+                result.data.forEach((mensaje, index) => {
+                    const fecha = new Date(mensaje.fecha).toLocaleString();
+                    const tipoClass = mensaje.tipo_remitente.toLowerCase().replace(' ', '-');
+                    const isEven = index % 2 === 0;
+                    
+                    html += `
+                        <div class="conversation-message ${tipoClass} ${isEven ? 'left' : 'right'}">
+                            <div class="message-header">
+                                <span class="message-author">${mensaje.usuario_nombre}</span>
+                                <span class="message-type">${mensaje.tipo_remitente}</span>
+                                <span class="message-time">${fecha}</span>
+                            </div>
+                            <div class="message-body">
+                                ${mensaje.mensaje}
+                                ${mensaje.archivo_adjunto ? `<div class="attachment">📎 ${mensaje.archivo_adjunto}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                conversationDiv.innerHTML = html;
+                
+                // Scroll al final de la conversación
+                conversationDiv.scrollTop = conversationDiv.scrollHeight;
+                
+            } catch (error) {
+                mostrarMensaje('Error al cargar mensajes: ' + error.message, 'error');
+            }
+        }
+
+        // Actualizar mensajes
+        function actualizarMensajes() {
+            if (window.currentTicketId) {
+                cargarMensajesConversacion(window.currentTicketId);
+                mostrarMensaje('Mensajes actualizados', 'success');
+            }
+        }
+
+        // Usar plantillas de mensaje
+        function usarPlantilla(tipo) {
+            const messageTextarea = document.getElementById('message_mensaje');
+            const tipoSelect = document.getElementById('message_tipo_remitente');
+            
+            let plantilla = '';
+            let tipoRemitente = 'Soporte';
+            
+            switch (tipo) {
+                case 'solicitar_info':
+                    plantilla = `Hola,
+
+Para poder ayudarte mejor con tu solicitud, necesitamos información adicional:
+
+1. ¿En qué momento específico ocurre el problema?
+2. ¿Qué navegador estás utilizando?
+3. ¿Has intentado alguna solución por tu cuenta?
+
+Por favor, proporciona estos detalles para continuar con el diagnóstico.
+
+Saludos,
+Equipo de Soporte`;
+                    break;
+                    
+                case 'captura':
+                    plantilla = `Hola,
+
+Para diagnosticar el problema correctamente, necesitamos que nos envíes:
+
+📸 Una captura de pantalla del error
+🖥️ Información sobre tu sistema operativo y navegador
+
+Esto nos ayudará a identificar la causa y proporcionar una solución más rápida.
+
+Gracias por tu colaboración.`;
+                    break;
+                    
+                case 'trabajando':
+                    plantilla = `Hola,
+
+Hemos identificado el origen del problema y nuestro equipo técnico ya está trabajando en la solución.
+
+🔧 Estado: En proceso
+⏱️ Tiempo estimado: 2-4 horas
+📧 Te mantendremos informado del progreso
+
+Si tienes alguna pregunta adicional, no dudes en contactarnos.`;
+                    break;
+                    
+                case 'resuelto':
+                    plantilla = `¡Hola!
+
+✅ El problema ha sido resuelto exitosamente.
+
+Por favor, verifica que todo esté funcionando correctamente y confirma si la solución es satisfactoria.
+
+Si continúas experimentando algún inconveniente, no dudes en contactarnos nuevamente.
+
+¡Gracias por tu paciencia!`;
+                    break;
+            }
+            
+            messageTextarea.value = plantilla;
+            tipoSelect.value = tipoRemitente;
+            messageTextarea.focus();
+        }
+
+        // Manejar formulario de mensajes
+        document.getElementById('messageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const messageData = {};
+            
+            // Convertir FormData a objeto
+            for (let [key, value] of formData.entries()) {
+                if (key === 'usuario_id') {
+                    messageData[key] = parseInt(value);
+                } else {
+                    messageData[key] = value;
+                }
+            }
+            
+            const ticketId = messageData.ticket_id;
+            delete messageData.ticket_id; // Remover del cuerpo de la petición
+            
+            try {
+                const response = await fetch(`${API_URL}/tickets/${ticketId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(messageData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensaje('Mensaje enviado exitosamente', 'success');
+                    
+                    // Limpiar formulario
+                    document.getElementById('message_mensaje').value = '';
+                    document.getElementById('message_archivo_adjunto').value = '';
+                    
+                    // Recargar conversación
+                    await cargarMensajesConversacion(ticketId);
+                } else {
+                    mostrarMensaje(`Error: ${result.message || 'Error al enviar mensaje'}`, 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
+            }
+        });
+
+        // Eliminar ticket desde la tabla
+        function eliminarTicket(ticketId) {
+            if (!confirm(`¿Estás seguro de que quieres eliminar el ticket con ID ${ticketId}?`)) {
+                return;
+            }
+            
+            fetch(`${API_URL}/tickets/${ticketId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    mostrarMensaje('Ticket eliminado exitosamente', 'success');
+                    listarTickets(); // Recargar la lista
+                } else {
+                    mostrarMensaje(`Error: ${result.message || 'Error al eliminar ticket'}`, 'error');
+                }
+            })
+            .catch(error => {
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
+            });
+        }
+
+        // Ver historial del ticket
+        async function verHistorial(ticketId) {
+            try {
+                // Obtener información del ticket
+                const ticketResponse = await fetch(`${API_URL}/tickets/${ticketId}`);
+                const ticketResult = await ticketResponse.json();
+                
+                if (!ticketResponse.ok) {
+                    mostrarMensaje(`Error: ${ticketResult.message}`, 'error');
+                    return;
+                }
+                
+                // Obtener historial de cambios
+                const historialResponse = await fetch(`${API_URL}/tickets/${ticketId}/history`);
+                const historialResult = await historialResponse.json();
+                
+                // Obtener mensajes
+                const mensajesResponse = await fetch(`${API_URL}/tickets/${ticketId}/messages`);
+                const mensajesResult = await mensajesResponse.json();
+                
+                // Mostrar la información
+                mostrarHistorialCompleto(ticketResult.data, historialResult.data || [], mensajesResult.data || []);
+                
+                // Cambiar a la sección de historial
+                showSection('historial');
+                
+            } catch (error) {
+                mostrarMensaje('Error al obtener el historial: ' + error.message, 'error');
+            }
+        }
+
+        // Mostrar historial completo
+        function mostrarHistorialCompleto(ticket, cambios, mensajes) {
+            // Actualizar información del ticket
+            document.getElementById('ticket-info').innerHTML = `
+                <strong>Ticket #${ticket.id}</strong> - ${ticket.numero_ticket}<br>
+                <strong>Asunto:</strong> ${ticket.asunto}<br>
+                <strong>Estado Actual:</strong> 
+                <span style="background-color: ${getEstadoColor(ticket.estado_id)}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+                    ${getEstadoNombre(ticket.estado_id)}
+                </span><br>
+                <strong>Empresa:</strong> ${ticket.empresa_nombre}
+            `;
+            
+            // Mostrar cambios de estado
+            mostrarCambiosEstado(cambios);
+            
+            // Mostrar mensajes
+            mostrarMensajes(mensajes);
+            
+            // Mostrar JSON completo
+            const historialCompleto = {
+                ticket: ticket,
+                cambios_estado: cambios,
+                mensajes: mensajes,
+                metadata: {
+                    total_cambios: cambios.length,
+                    total_mensajes: mensajes.length,
+                    fecha_consulta: new Date().toISOString()
+                }
+            };
+            
+            document.getElementById('json-display').textContent = JSON.stringify(historialCompleto, null, 2);
+            
+            // Guardar datos globalmente para copiar/descargar
+            window.historialActual = historialCompleto;
+        }
+
+        // Mostrar cambios de estado
+        function mostrarCambiosEstado(cambios) {
+            const cambiosList = document.getElementById('cambios-list');
+            
+            if (!cambios || cambios.length === 0) {
+                cambiosList.innerHTML = '<p>No hay cambios de estado registrados.</p>';
+                return;
+            }
+            
+            let html = '<div class="timeline">';
+            cambios.forEach((cambio, index) => {
+                const fecha = new Date(cambio.fecha).toLocaleString();
+                const estadoAnterior = cambio.estado_anterior_nombre || 'N/A';
+                const estadoNuevo = cambio.estado_nuevo_nombre || getEstadoNombre(cambio.estado_nuevo);
+                
+                html += `
+                    <div class="timeline-item">
+                        <div class="timeline-marker">${index + 1}</div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <strong>${fecha}</strong>
+                                <span class="timeline-user">por ${cambio.usuario_nombre}</span>
+                            </div>
+                            <div class="timeline-body">
+                                <div class="estado-change">
+                                    <span class="estado-antes">${estadoAnterior}</span>
+                                    <span class="arrow">→</span>
+                                    <span class="estado-despues" style="background-color: ${cambio.estado_nuevo_color || getEstadoColor(cambio.estado_nuevo)}">
+                                        ${estadoNuevo}
+                                    </span>
+                                </div>
+                                ${cambio.comentario ? `<div class="comentario"><strong>Comentario:</strong> ${cambio.comentario}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            cambiosList.innerHTML = html;
+        }
+
+        // Mostrar mensajes
+        function mostrarMensajes(mensajes) {
+            const mensajesList = document.getElementById('mensajes-list');
+            
+            if (!mensajes || mensajes.length === 0) {
+                mensajesList.innerHTML = '<p>No hay mensajes registrados.</p>';
+                return;
+            }
+            
+            let html = '<div class="mensajes-container">';
+            mensajes.forEach(mensaje => {
+                const fecha = new Date(mensaje.fecha).toLocaleString();
+                const tipoClass = mensaje.tipo_remitente.toLowerCase().replace(' ', '-');
+                
+                html += `
+                    <div class="mensaje-item ${tipoClass}">
+                        <div class="mensaje-header">
+                            <strong>${mensaje.usuario_nombre}</strong>
+                            <span class="mensaje-tipo">(${mensaje.tipo_remitente})</span>
+                            <span class="mensaje-fecha">${fecha}</span>
+                        </div>
+                        <div class="mensaje-content">
+                            ${mensaje.mensaje}
+                            ${mensaje.archivo_adjunto ? `<div class="archivo-adjunto">📎 ${mensaje.archivo_adjunto}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            mensajesList.innerHTML = html;
+        }
+
+        // Manejar tabs
+        function mostrarTab(tabName) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Desactivar todos los botones
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Mostrar contenido seleccionado
+            document.getElementById(`tab-content-${tabName}`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Copiar JSON al portapapeles
+        function copiarHistorial() {
+            if (!window.historialActual) {
+                mostrarMensaje('No hay historial para copiar', 'error');
+                return;
+            }
+            
+            const jsonText = JSON.stringify(window.historialActual, null, 2);
+            navigator.clipboard.writeText(jsonText).then(() => {
+                mostrarMensaje('Historial copiado al portapapeles', 'success');
+            }).catch(err => {
+                mostrarMensaje('Error al copiar: ' + err.message, 'error');
+            });
+        }
+
+        // Descargar JSON como archivo
+        function descargarHistorial() {
+            if (!window.historialActual) {
+                mostrarMensaje('No hay historial para descargar', 'error');
+                return;
+            }
+            
+            const jsonText = JSON.stringify(window.historialActual, null, 2);
+            const blob = new Blob([jsonText], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `historial_ticket_${window.historialActual.ticket.id}_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            mostrarMensaje('Historial descargado exitosamente', 'success');
+        }
+
+        // Vista previa del cambio de estado
+        function previewEstado() {
+            const ticketId = document.getElementById('status_ticket_id').value;
+            const estadoId = document.getElementById('status_nuevo_estado').value;
+            const usuarioId = document.getElementById('status_usuario_id').value;
+            const comentario = document.getElementById('status_comentario').value;
+            
+            if (!ticketId || !estadoId || !usuarioId) {
+                mostrarMensaje('Por favor completa los campos obligatorios para ver la vista previa', 'error');
+                return;
+            }
+            
+            const estadoNombre = getEstadoNombre(parseInt(estadoId));
+            const previewDiv = document.getElementById('preview-estado');
+            const previewText = document.getElementById('preview-text');
+            
+            let texto = `<strong>Ticket #${ticketId}</strong> será cambiado a estado: <span style="background-color: ${getEstadoColor(parseInt(estadoId))}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${estadoNombre}</span><br>`;
+            texto += `<strong>Usuario:</strong> ID ${usuarioId}<br>`;
+            
+            if (comentario.trim()) {
+                texto += `<strong>Comentario:</strong> "${comentario}"`;
+            } else {
+                texto += `<em>Sin comentario</em>`;
+            }
+            
+            previewText.innerHTML = texto;
+            previewDiv.style.display = 'block';
+        }
+
+        // Manejar formulario de cambio de estado
+        document.getElementById('statusForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const statusData = {};
+            
+            // Convertir FormData a objeto
+            for (let [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    if (['ticket_id', 'estado_id', 'usuario_id'].includes(key)) {
+                        statusData[key.replace('ticket_id', 'id')] = parseInt(value);
+                    } else {
+                        statusData[key] = value;
+                    }
+                }
+            }
+            
+            const ticketId = statusData.id;
+            delete statusData.id; // Remover el ID del cuerpo de la petición
+            
+            try {
+                const response = await fetch(`${API_URL}/tickets/${ticketId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(statusData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensaje(`Estado del ticket ${ticketId} actualizado exitosamente`, 'success');
+                    e.target.reset();
+                    
+                    // Si estamos en la vista de lista, actualizar automáticamente
+                    if (document.getElementById('listSection').style.display !== 'none') {
+                        listarTickets();
+                    }
+                } else {
+                    mostrarMensaje(`Error: ${result.message || 'Error al cambiar el estado del ticket'}`, 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
+            }
+        });
+
+        // Eliminar ticket
+        document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('delete_id').value;
+            
+            if (!confirm(`¿Estás seguro de que quieres eliminar el ticket con ID ${id}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/tickets/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensaje('Ticket eliminado exitosamente', 'success');
+                    document.getElementById('delete_id').value = '';
+                } else {
+                    mostrarMensaje(`Error: ${result.message || 'Error al eliminar ticket'}`, 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
+            }
+        });
+
+        // Cargar lista automáticamente al inicio
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mantener la sección de crear como predeterminada e inicializar
+            showSection('create');
+            inicializarFormulario();
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .navigation {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .navigation button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .navigation button:hover {
+            background: #0056b3;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .form-group select:disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .form-group small {
+            display: block;
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        button[type="submit"] {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        button[type="submit"]:hover {
+            background: #218838;
+        }
+        
+        button[type="button"] {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+        
+        button[type="button"]:hover {
+            background: #138496;
+        }
+        
+        table {
+            margin-top: 20px;
+        }
+        
+        table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px;
+        }
+        
+        table td {
+            padding: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .section {
+            margin-top: 20px;
+        }
+        
+        #message {
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        #tickets-list button {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        #tickets-list button:hover {
+            background: #138496;
+        }
+        
+        .btn-status, .btn-delete {
+            background: none;
+            border: none;
+            padding: 5px 8px;
+            margin: 0 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-status:hover {
+            background-color: #e9ecef;
+        }
+        
+        .btn-delete:hover {
+            background-color: #f8d7da;
+        }
+        
+        .btn-history {
+            background: none;
+            border: none;
+            padding: 5px 8px;
+            margin: 0 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-history:hover {
+            background-color: #d1ecf1;
+        }
+        
+        .btn-messages {
+            background: none;
+            border: none;
+            padding: 5px 8px;
+            margin: 0 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-messages:hover {
+            background-color: #d4edda;
+        }
+        
+        small {
+            display: block;
+            margin-top: 3px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        /* Estilo para estados en la tabla */
+        td span {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Estilos para historial */
+        .historial-controls {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .btn-back, .btn-copy, .btn-download {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-right: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-back:hover, .btn-copy:hover, .btn-download:hover {
+            background: #5a6268;
+        }
+        
+        .historial-tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .tab-button:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .tab-button.active {
+            border-bottom-color: #007bff;
+            color: #007bff;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Timeline para cambios de estado */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-left: 2px solid #ddd;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: -20px;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-left: 20px;
+        }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .timeline-user {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .estado-change {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .estado-antes, .estado-despues {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .estado-antes {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .estado-despues {
+            color: white;
+        }
+        
+        .arrow {
+            font-size: 18px;
+            color: #28a745;
+        }
+        
+        .comentario {
+            font-style: italic;
+            color: #6c757d;
+            border-left: 3px solid #17a2b8;
+            padding-left: 10px;
+        }
+        
+        /* Estilos para mensajes */
+        .mensajes-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .mensaje-item {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .mensaje-item.cliente {
+            border-left-color: #28a745;
+        }
+        
+        .mensaje-item.soporte {
+            border-left-color: #ffc107;
+        }
+        
+        .mensaje-item.sistema {
+            border-left-color: #dc3545;
+        }
+        
+        .mensaje-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .mensaje-tipo {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        
+        .mensaje-fecha {
+            margin-left: auto;
+            color: #6c757d;
+            font-size: 12px;
+        }
+        
+        .mensaje-content {
+            line-height: 1.5;
+        }
+        
+        .archivo-adjunto {
+            margin-top: 8px;
+            padding: 5px 10px;
+            background: #e3f2fd;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        /* JSON display */
+        #json-display {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            max-height: 600px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+        
+        /* Estilos para gestión de mensajes */
+        .messages-controls {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .btn-refresh {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-refresh:hover {
+            background: #138496;
+        }
+        
+        .ticket-info-card {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .ticket-info-card h3 {
+            margin: 0 0 10px 0;
+            color: #1565c0;
+        }
+        
+        .ticket-info-card p {
+            margin: 5px 0;
+        }
+        
+        .messages-container-full {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            height: 600px;
+        }
+        
+        .conversation-panel {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .conversation-panel h3 {
+            background: #f8f9fa;
+            margin: 0;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            color: #495057;
+        }
+        
+        .conversation-messages {
+            height: 520px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fafafa;
+        }
+        
+        .no-messages {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            margin-top: 100px;
+        }
+        
+        .conversation-message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            position: relative;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .conversation-message.left {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            margin-right: 20%;
+        }
+        
+        .conversation-message.right {
+            background: #f3e5f5;
+            border-right: 4px solid #9c27b0;
+            margin-left: 20%;
+        }
+        
+        .conversation-message.soporte {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .conversation-message.cliente {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .conversation-message.sistema {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+        
+        .message-author {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .message-type {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+        
+        .message-time {
+            margin-left: auto;
+            color: #666;
+        }
+        
+        .message-body {
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+        
+        .attachment {
+            margin-top: 8px;
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            font-size: 11px;
+        }
+        
+        .new-message-panel {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .new-message-panel h3 {
+            background: #f8f9fa;
+            margin: 0;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            color: #495057;
+        }
+        
+        .new-message-panel form {
+            padding: 15px;
+            height: 520px;
+            overflow-y: auto;
+        }
+        
+        .message-templates {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        
+        .message-templates button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .message-templates button:hover {
+            background: #5a6268;
+        }
+        
+        textarea#message_mensaje {
+            min-height: 100px;
+            resize: vertical;
+        }
+    </style>
+</body>
+</html>

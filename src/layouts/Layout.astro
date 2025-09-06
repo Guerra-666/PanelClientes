@@ -6,9 +6,11 @@ import { ClientRouter } from "astro:transitions";
 
 export interface Props {
   currentPage?: string;
+  userId?: string;
+  userName?: string;
 }
 
-const { currentPage = "dashboard" } = Astro.props;
+const { currentPage = "dashboard", userId, userName = "Usuario" } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -22,15 +24,15 @@ const { currentPage = "dashboard" } = Astro.props;
 </head>
 <body class="bg-gray-50 min-h-screen">
   <!-- NavBar -->
-  <NavBar userName="Adrian Guerra" />
+  <NavBar userName={userName} />
   
   <div class="lg:flex min-h-screen">
 	<!-- Sidebar -->
-	<Sidebar currentPage={currentPage} />
+	<Sidebar currentPage={currentPage} userId={userId} />
 
 	<!-- Contenido principal -->
 	<main class="flex-1 lg:p-6 p-4 pt-20 lg:pt-6">
-	  <div class="max-w-7xl mx-auto">
+	  <div class="w-full">
 		<slot />
 	  </div>
 	</main>

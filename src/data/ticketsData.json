@@ -1,0 +1,314 @@
+{
+  "user1": {
+    "userName": "María González",
+    "userAvatar": "MG",
+    "stats": {
+      "totalTickets": 8,
+      "openTickets": 2,
+      "resolvedTickets": 5,
+      "avgResponseTime": "4.2 hrs"
+    },
+    "tickets": [
+      {
+        "id": "12345",
+        "title": "Problema con el correo electrónico",
+        "description": "No puedo recibir correos desde hace 2 días. Los correos salen normalmente pero no llegan nuevos mensajes.",
+        "category": "Correo Electrónico",
+        "service": "Correo Empresarial",
+        "priority": "Alta",
+        "status": "En Progreso",
+        "created": "15 Dic 2024",
+        "lastUpdate": "Última actualización hace 2 horas",
+        "assignedTo": "Carlos Mendoza",
+        "assignedToAvatar": "CM",
+        "messages": [
+          {
+            "id": 1,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Hola, tengo un problema con mi correo electrónico. No he recibido correos desde hace 2 días.",
+            "timestamp": "15 Dic 2024 - 10:30 AM",
+            "attachments": []
+          },
+          {
+            "id": 2,
+            "sender": "Carlos Mendoza",
+            "avatar": "CM",
+            "type": "support",
+            "message": "Hola María, gracias por contactarnos. Voy a revisar la configuración de tu cuenta de correo. ¿Puedes confirmar si los correos salientes funcionan correctamente?",
+            "timestamp": "15 Dic 2024 - 11:15 AM",
+            "attachments": []
+          },
+          {
+            "id": 3,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Sí, los correos salientes funcionan perfectamente. Solo tengo problemas para recibir.",
+            "timestamp": "15 Dic 2024 - 11:45 AM",
+            "attachments": []
+          },
+          {
+            "id": 4,
+            "sender": "Carlos Mendoza",
+            "avatar": "CM",
+            "type": "support",
+            "message": "Perfecto. He identificado el problema en la configuración del servidor POP3. Estoy aplicando los ajustes necesarios. Te mantengo informada.",
+            "timestamp": "15 Dic 2024 - 2:30 PM",
+            "attachments": []
+          }
+        ]
+      },
+      {
+        "id": "12344",
+        "title": "Actualización de diseño web",
+        "description": "Solicito cambios en la página principal para actualizar el contenido de servicios y agregar nuevas secciones.",
+        "category": "Sitio Web",
+        "service": "Paquete Esencial",
+        "priority": "Media",
+        "status": "Resuelto",
+        "created": "12 Dic 2024",
+        "lastUpdate": "Resuelto hace 1 día",
+        "assignedTo": "Ana Rodríguez",
+        "assignedToAvatar": "AR",
+        "messages": [
+          {
+            "id": 1,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Necesito actualizar mi página web con nueva información sobre mis servicios. ¿Pueden ayudarme?",
+            "timestamp": "12 Dic 2024 - 9:00 AM",
+            "attachments": ["nuevo-contenido.pdf"]
+          },
+          {
+            "id": 2,
+            "sender": "Ana Rodríguez",
+            "avatar": "AR",
+            "type": "support",
+            "message": "¡Hola María! Por supuesto, estaré encantada de ayudarte con la actualización. He revisado el documento que adjuntaste. ¿Te parece si programamos una videollamada para revisar los detalles?",
+            "timestamp": "12 Dic 2024 - 10:30 AM",
+            "attachments": []
+          },
+          {
+            "id": 3,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Perfecto, ¿mañana a las 3 PM te parece bien?",
+            "timestamp": "12 Dic 2024 - 11:00 AM",
+            "attachments": []
+          },
+          {
+            "id": 4,
+            "sender": "Ana Rodríguez",
+            "avatar": "AR",
+            "type": "support",
+            "message": "Excelente, nos vemos mañana. Ya he completado todas las actualizaciones según tus especificaciones. La página ya está en línea con los nuevos cambios.",
+            "timestamp": "13 Dic 2024 - 4:15 PM",
+            "attachments": ["captura-nueva-web.png"]
+          }
+        ]
+      },
+      {
+        "id": "12343",
+        "title": "Consulta sobre facturación",
+        "description": "Tengo una duda sobre el cargo del mes pasado en mi estado de cuenta. Parece que hay un cobro adicional.",
+        "category": "Facturación",
+        "service": "Hosting Premium",
+        "priority": "Baja",
+        "status": "Pendiente",
+        "created": "10 Dic 2024",
+        "lastUpdate": "Creado hace 5 días",
+        "assignedTo": "Departamento de Facturación",
+        "assignedToAvatar": "DF",
+        "messages": [
+          {
+            "id": 1,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Hola, revisando mi estado de cuenta del mes pasado encontré un cargo adicional de $15.99 que no entiendo. ¿Pueden explicarme de qué se trata?",
+            "timestamp": "10 Dic 2024 - 3:20 PM",
+            "attachments": ["estado-cuenta-noviembre.pdf"]
+          }
+        ]
+      },
+      {
+        "id": "12342",
+        "title": "Migración de hosting a servidor dedicado",
+        "description": "Quiero migrar mi sitio web actual a un servidor dedicado por el crecimiento del tráfico.",
+        "category": "Hosting/Dominio",
+        "service": "Hosting Premium",
+        "priority": "Media",
+        "status": "En Progreso",
+        "created": "8 Dic 2024",
+        "lastUpdate": "Última actualización hace 6 horas",
+        "assignedTo": "Equipo Técnico",
+        "assignedToAvatar": "ET",
+        "messages": [
+          {
+            "id": 1,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Mi sitio web ha crecido mucho y creo que necesito migrar a un servidor dedicado. ¿Qué opciones tienen disponibles?",
+            "timestamp": "8 Dic 2024 - 11:00 AM",
+            "attachments": []
+          },
+          {
+            "id": 2,
+            "sender": "Equipo Técnico",
+            "avatar": "ET",
+            "type": "support",
+            "message": "Hola María, excelente noticia sobre el crecimiento de tu sitio. Te envío las opciones de servidores dedicados disponibles. La migración incluye transferencia completa sin tiempo de inactividad.",
+            "timestamp": "8 Dic 2024 - 2:45 PM",
+            "attachments": ["planes-servidor-dedicado.pdf", "proceso-migracion.pdf"]
+          },
+          {
+            "id": 3,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Perfecto, me interesa el plan Pro. ¿Cuándo podríamos hacer la migración?",
+            "timestamp": "9 Dic 2024 - 9:30 AM",
+            "attachments": []
+          },
+          {
+            "id": 4,
+            "sender": "Equipo Técnico",
+            "avatar": "ET",
+            "type": "support",
+            "message": "Genial elección. Estamos preparando todo para la migración. Te contactaremos mañana para coordinar la fecha y hora exacta.",
+            "timestamp": "9 Dic 2024 - 11:20 AM",
+            "attachments": []
+          }
+        ]
+      },
+      {
+        "id": "12341",
+        "title": "Configuración de SSL",
+        "description": "Necesito configurar certificados SSL para mi dominio principal y subdominios.",
+        "category": "Soporte Técnico",
+        "service": "Hosting Premium",
+        "priority": "Alta",
+        "status": "Resuelto",
+        "created": "5 Dic 2024",
+        "lastUpdate": "Resuelto hace 3 días",
+        "assignedTo": "Carlos Mendoza",
+        "assignedToAvatar": "CM",
+        "messages": [
+          {
+            "id": 1,
+            "sender": "María González",
+            "avatar": "MG",
+            "type": "client",
+            "message": "Necesito configurar certificados SSL para mi dominio y todos los subdominios. Es urgente por temas de seguridad.",
+            "timestamp": "5 Dic 2024 - 8:30 AM",
+            "attachments": []
+          },
+          {
+            "id": 2,
+            "sender": "Carlos Mendoza",
+            "avatar": "CM",
+            "type": "support",
+            "message": "Entendido María, la seguridad es prioridad. Voy a configurar los certificados SSL wildcard para cubrir tu dominio principal y todos los subdominios.",
+            "timestamp": "5 Dic 2024 - 9:15 AM",
+            "attachments": []
+          },
+          {
+            "id": 3,
+            "sender": "Carlos Mendoza",
+            "avatar": "CM",
+            "type": "support",
+            "message": "Listo! He configurado exitosamente los certificados SSL. Tu sitio ahora tiene HTTPS habilitado en todos los dominios. Te envío la documentación de verificación.",
+            "timestamp": "5 Dic 2024 - 11:45 AM",
+            "attachments": ["verificacion-ssl.pdf", "guia-https.pdf"]
+          }
+        ]
+      }
+    ]
+  },
+  "user2": {
+    "userName": "Carlos Ruiz",
+    "userAvatar": "CR",
+    "stats": {
+      "totalTickets": 12,
+      "openTickets": 3,
+      "resolvedTickets": 8,
+      "avgResponseTime": "3.8 hrs"
+    },
+    "tickets": [
+      {
+        "id": "22345",
+        "title": "Error 500 en mi sitio web",
+        "description": "Mi sitio web muestra error 500 desde esta mañana. Los clientes no pueden acceder.",
+        "category": "Soporte Técnico",
+        "service": "Hosting Premium",
+        "priority": "Crítica",
+        "status": "En Progreso",
+        "created": "15 Dic 2024",
+        "lastUpdate": "Última actualización hace 30 minutos",
+        "assignedTo": "Equipo Técnico",
+        "assignedToAvatar": "ET",
+        "messages": [
+          {
+            "id": 1,
+            "sender": "Carlos Ruiz",
+            "avatar": "CR",
+            "type": "client",
+            "message": "¡Urgente! Mi sitio web está mostrando error 500 y no pueden acceder mis clientes. Necesito ayuda inmediata.",
+            "timestamp": "15 Dic 2024 - 8:00 AM",
+            "attachments": ["captura-error.png"]
+          },
+          {
+            "id": 2,
+            "sender": "Equipo Técnico",
+            "avatar": "ET",
+            "type": "support",
+            "message": "Hola Carlos, ya estamos investigando el problema. Detectamos un issue con el servidor. Trabajando en la solución.",
+            "timestamp": "15 Dic 2024 - 8:15 AM",
+            "attachments": []
+          }
+        ]
+      }
+    ]
+  },
+  "user3": {
+    "userName": "Ana Martínez",
+    "userAvatar": "AM",
+    "stats": {
+      "totalTickets": 6,
+      "openTickets": 1,
+      "resolvedTickets": 5,
+      "avgResponseTime": "2.5 hrs"
+    },
+    "tickets": [
+      {
+        "id": "32345",
+        "title": "Backup automático no funciona",
+        "description": "Los backups automáticos de mi sitio web no se están generando desde hace una semana.",
+        "category": "Soporte Técnico",
+        "service": "Mantenimiento Web Premium",
+        "priority": "Media",
+        "status": "Pendiente",
+        "created": "14 Dic 2024",
+        "lastUpdate": "Creado hace 1 día",
+        "assignedTo": "Equipo Técnico",
+        "assignedToAvatar": "ET",
+        "messages": [
+          {
+            "id": 1,
+            "sender": "Ana Martínez",
+            "avatar": "AM",
+            "type": "client",
+            "message": "Hola, he notado que los backups automáticos no se han generado en la última semana. ¿Pueden revisar qué está pasando?",
+            "timestamp": "14 Dic 2024 - 2:00 PM",
+            "attachments": []
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+---
+import { TicketService } from '../services/ticketService';
+
+export const prerender = false;
+
+// Intentar obtener un usuario válido o usar el por defecto
+const defaultUserId = '19';
+
+try {
+  const allUsers = await TicketService.getAllUsersTickets();
+  const firstUserId = Object.keys(allUsers)[0]?.replace('user', '') || defaultUserId;
+  return Astro.redirect(`/tickets/${firstUserId}/`);
+} catch (error) {
+  // Si hay algún error, usar el ID por defecto
+  return Astro.redirect(`/tickets/${defaultUserId}/`);
+}
+---

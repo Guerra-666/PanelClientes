@@ -1,0 +1,778 @@
+---
+export interface Props {
+  ticketsData: {
+    ticketsStats: {
+      activos: number;
+      resueltos: number;
+      enProgreso: number;
+      total: number;
+    };
+    tickets: Array<{
+      id: string;
+      title: string;
+      description: string;
+      status: string;
+      category: string;
+      service: string;
+      assignedTo: string;
+      assignedToAvatar: string;
+      created: string;
+      lastUpdate: string;
+      priority: string;
+      messages: Array<{
+        id: number;
+        sender: string;
+        type: string;
+        message: string;
+        timestamp: string;
+        avatar: string;
+      }>;
+    }>;
+  };
+  userId: string;
+  currentPage?: string;
+}
+
+const { ticketsData, userId, currentPage = "tickets" } = Astro.props;
+---
+
+<div class="min-h-screen bg-gray-50/30 p-4 sm:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+    
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
+      <div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-2 sm:mb-3">
+          Mis Tickets de Soporte
+        </h1>
+        <p class="text-lg sm:text-xl lg:text-2xl text-gray-600">
+          Gestiona tus solicitudes de soporte técnico
+        </p>
+      </div>
+      <button id="create-ticket-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold flex items-center gap-3 transition-colors text-base sm:text-lg shadow-sm hover:shadow-md">
+        <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+        </svg>
+        <span>Crear Nuevo Ticket</span>
+      </button>
+    </div>
+
+    <!-- Informational Note -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 sm:p-8 lg:p-10">
+      <div class="flex items-start gap-4 sm:gap-6">
+        <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+          <svg class="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-base sm:text-lg lg:text-xl text-blue-800 leading-relaxed">
+            <strong class="font-bold">Horario de Atención:</strong> Recuerde que el horario de oficina es de Lunes - Viernes 
+            de 9 a 6 de la tarde. El tiempo de respuesta varía según el plan contratado y disponibilidad de 
+            los agentes.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+      <div class="bg-white p-6 sm:p-8 lg:p-10 rounded-xl shadow-sm border border-gray-100 text-center">
+        <div class="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-600 mb-2 sm:mb-4">
+          {ticketsData.ticketsStats.activos}
+        </div>
+        <div class="text-base sm:text-lg lg:text-xl text-gray-600 font-semibold">
+          Tickets Activos
+        </div>
+      </div>
+      
+      <div class="bg-white p-6 sm:p-8 lg:p-10 rounded-xl shadow-sm border border-gray-100 text-center">
+        <div class="text-3xl sm:text-4xl lg:text-5xl font-bold text-green-600 mb-2 sm:mb-4">
+          {ticketsData.ticketsStats.resueltos}
+        </div>
+        <div class="text-base sm:text-lg lg:text-xl text-gray-600 font-semibold">
+          Resueltos
+        </div>
+      </div>
+      
+      <div class="bg-white p-6 sm:p-8 lg:p-10 rounded-xl shadow-sm border border-gray-100 text-center">
+        <div class="text-3xl sm:text-4xl lg:text-5xl font-bold text-orange-600 mb-2 sm:mb-4">
+          {ticketsData.ticketsStats.enProgreso}
+        </div>
+        <div class="text-base sm:text-lg lg:text-xl text-gray-600 font-semibold">
+          En Progreso
+        </div>
+      </div>
+      
+      <div class="bg-white p-6 sm:p-8 lg:p-10 rounded-xl shadow-sm border border-gray-100 text-center">
+        <div class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-600 mb-2 sm:mb-4">
+          {ticketsData.ticketsStats.total}
+        </div>
+        <div class="text-base sm:text-lg lg:text-xl text-gray-600 font-semibold">
+          Total
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Ticket Form (Hidden by default) -->
+    <div id="create-ticket-form" class="hidden bg-white border-2 border-blue-200 rounded-xl shadow-sm overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-8 sm:px-10 lg:px-12 py-6 sm:py-8 lg:py-10 border-b border-blue-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3 sm:gap-4">
+            <svg class="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+            </svg>
+            Crear Nuevo Ticket
+          </h3>
+          <button id="close-form-btn" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-white/50 transition-colors">
+            <svg class="h-6 w-6 sm:h-8 sm:w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-8 sm:p-10 lg:p-12 space-y-6 sm:space-y-8 lg:space-y-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
+          <div class="space-y-3">
+            <label class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Asunto *</label>
+            <input
+              id="ticket-subject"
+              type="text"
+              class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg lg:text-xl border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              placeholder="Describe brevemente el problema"
+            />
+          </div>
+          <div class="space-y-3">
+            <label class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Categoría *</label>
+            <select id="ticket-category" class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg lg:text-xl border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+              <option value="tecnico">Soporte Técnico</option>
+              <option value="web">Sitio Web</option>
+              <option value="correo">Correo Electrónico</option>
+              <option value="hosting">Hosting/Dominio</option>
+              <option value="facturacion">Facturación</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="space-y-3">
+          <label class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Servicio Relacionado</label>
+          <select id="ticket-service" class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg lg:text-xl border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+            <option value="">Seleccionar servicio</option>
+            <option value="paquete-esencial">Paquete Esencial</option>
+            <option value="mantenimiento-web">Mantenimiento Web Premium</option>
+            <option value="hosting-premium">Hosting Premium</option>
+            <option value="correo-empresarial">Correo Empresarial</option>
+          </select>
+        </div>
+        
+        <div class="space-y-3">
+          <label class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Prioridad</label>
+          <select id="ticket-priority" class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg lg:text-xl border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+            <option value="baja">Baja</option>
+            <option value="media" selected>Media</option>
+            <option value="alta">Alta</option>
+            <option value="critica">Crítica</option>
+          </select>
+        </div>
+        
+        <div class="space-y-3">
+          <label class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Descripción Detallada *</label>
+          <textarea
+            id="ticket-description"
+            rows={4}
+            class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg lg:text-xl border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            placeholder="Describe el problema con el mayor detalle posible. Incluye pasos para reproducir el error, mensajes de error, capturas de pantalla, etc."
+          ></textarea>
+        </div>
+        
+        <div class="space-y-3">
+          <label class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Archivos Adjuntos</label>
+          <div id="dropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 sm:p-10 lg:p-12 text-center hover:border-blue-300 transition-colors cursor-pointer">
+            <input type="file" id="ticket-files" multiple accept="image/*,.pdf,.txt,.doc,.docx" class="hidden" />
+            <svg class="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mb-4 sm:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <p class="text-base sm:text-lg lg:text-xl text-gray-600 font-semibold">Arrastra archivos aquí o haz clic para seleccionar</p>
+            <p class="text-sm sm:text-base lg:text-lg text-gray-500 mt-2">
+              Máximo 10MB por archivo. Formatos: jpg, png, pdf, txt, doc
+            </p>
+          </div>
+          
+          <!-- Preview de archivos del formulario -->
+          <div id="files-display"></div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-4 sm:gap-6 pt-6 sm:pt-8 lg:pt-10 border-t border-gray-200">
+          <button id="cancel-form-btn" class="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg lg:text-xl border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+            Cancelar
+          </button>
+          <button id="submit-ticket-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg lg:text-xl font-semibold rounded-xl transition-colors shadow-sm hover:shadow-md">
+            Crear Ticket
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tickets List -->
+    <div class="space-y-6 sm:space-y-8 lg:space-y-10">
+      {ticketsData.tickets.map((ticket) => (
+        <div class={`bg-white border-l-4 ${ticket.status === 'En Progreso' ? 'border-l-orange-500' : ticket.status === 'Resuelto' ? 'border-l-green-500' : 'border-l-blue-500'} rounded-xl shadow-sm overflow-hidden`}>
+          <div class="p-8 sm:p-10 lg:p-12">
+            <!-- Header -->
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-10">
+              <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+                <span class={`inline-flex items-center rounded-full px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg lg:text-xl font-bold ${
+                  ticket.status === 'En Progreso' ? 'bg-orange-100 text-orange-800' :
+                  ticket.status === 'Resuelto' ? 'bg-green-100 text-green-800' :
+                  'bg-blue-100 text-blue-800'
+                }`}>
+                  {ticket.status}
+                </span>
+                <span class="text-base sm:text-lg lg:text-xl text-gray-500 font-bold">#{ticket.id}</span>
+                <span class={`inline-flex items-center rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base lg:text-lg font-bold ${
+                  ticket.priority === 'Alta' ? 'bg-red-100 text-red-800' :
+                  ticket.priority === 'Media' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {ticket.priority}
+                </span>
+              </div>
+              <div class="text-base sm:text-lg lg:text-xl text-gray-500 font-semibold">
+                Creado: {ticket.created}
+              </div>
+            </div>
+            
+            <!-- Title and Description -->
+            <div class="mb-6 sm:mb-8 lg:mb-10">
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-6">
+                {ticket.title}
+              </h3>
+              <p class="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed">
+                {ticket.description}
+              </p>
+            </div>
+            
+            <!-- Details Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 mb-6 sm:mb-8 lg:mb-10">
+              <div>
+                <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Categoría:</span>
+                <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-2">{ticket.category}</p>
+              </div>
+              <div>
+                <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Servicio:</span>
+                <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-2">{ticket.service}</p>
+              </div>
+              <div>
+                <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">{ticket.status === 'Resuelto' ? 'Resuelto por:' : 'Asignado a:'}</span>
+                <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-2">{ticket.assignedTo}</p>
+              </div>
+            </div>
+            
+            <!-- Latest Message -->
+            {ticket.messages.length > 0 && (
+              <div class={`p-6 sm:p-8 lg:p-10 rounded-xl mb-6 sm:mb-8 lg:mb-10 ${ticket.status === 'Resuelto' ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-200'}`}>
+                <div class="flex items-start gap-4 sm:gap-6">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-sm sm:text-base lg:text-lg font-bold text-blue-600">
+                      {ticket.assignedToAvatar}
+                    </span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">
+                        {ticket.messages[ticket.messages.length - 1].sender}
+                      </span>
+                      <span class="text-sm sm:text-base lg:text-lg text-gray-500 font-semibold">
+                        {ticket.messages[ticket.messages.length - 1].timestamp}
+                      </span>
+                    </div>
+                    <p class="text-base sm:text-lg lg:text-xl text-gray-700 leading-relaxed">
+                      {ticket.messages[ticket.messages.length - 1].message}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <!-- Footer -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
+              <div class="flex items-center gap-3 sm:gap-4">
+                <div class={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${
+                  ticket.status === 'En Progreso' ? 'bg-orange-500' :
+                  ticket.status === 'Resuelto' ? 'bg-green-500' :
+                  'bg-blue-500'
+                }`}></div>
+                <span class="text-base sm:text-lg lg:text-xl text-gray-600 font-semibold">
+                  {ticket.lastUpdate}
+                </span>
+              </div>
+              <div class="flex gap-3 sm:gap-4">
+                <button class="ticket-detail-btn bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg lg:text-xl font-bold rounded-xl transition-colors shadow-sm hover:shadow-md" data-ticket-id={ticket.id}>
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Load More -->
+    <div class="text-center pt-8 sm:pt-10 lg:pt-12">
+      <button class="bg-white border border-gray-300 text-gray-700 px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg lg:text-xl font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm hover:shadow-md">
+        Ver Más Tickets
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat Modal (Hidden by default) -->
+<div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50 p-4 hidden">
+  <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <!-- Modal será poblado dinámicamente -->
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const createTicketBtn = document.getElementById('create-ticket-btn');
+    const createTicketForm = document.getElementById('create-ticket-form');
+    const closeFormBtn = document.getElementById('close-form-btn');
+    const cancelFormBtn = document.getElementById('cancel-form-btn');
+    const submitTicketBtn = document.getElementById('submit-ticket-btn');
+    const chatModal = document.getElementById('chat-modal');
+    const ticketDetailBtns = document.querySelectorAll('.ticket-detail-btn');
+    
+    // Variables globales
+    let currentAttachedFiles: File[] = [];
+
+    // Datos de tickets para el modal (obtenidos de window)
+    const ticketsData: Record<string, any> = (window as any).ticketsData || {};
+    const currentUserId = (window as any).currentUserId || '';
+    
+    // Función para obtener datos de ticket por ID
+    function getTicketById(ticketId: string) {
+      if (ticketsData[currentUserId] && ticketsData[currentUserId].tickets) {
+        return ticketsData[currentUserId].tickets.find((ticket: any) => ticket.id === ticketId);
+      }
+      return null;
+    }
+
+    // Función para crear el modal de chat
+    function createChatModal(ticket: any) {
+      const canSendMessages = ticket.status === "En Progreso";
+      
+      return `
+        <div class="border-b border-gray-200 p-8 sm:p-10 lg:p-12 flex-shrink-0">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center space-x-4 sm:space-x-6 mb-3 sm:mb-4">
+                <span class="inline-flex items-center rounded-full px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg lg:text-xl font-bold ${
+                  ticket.status === "En Progreso" ? "bg-orange-100 text-orange-800" : "bg-green-100 text-green-800"
+                }">
+                  ${ticket.status}
+                </span>
+                <span class="text-base sm:text-lg lg:text-xl text-gray-500 font-bold">#${ticket.id}</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">${ticket.title}</h2>
+              <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-2 sm:mt-3">${ticket.description}</p>
+            </div>
+            <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 p-2 sm:p-3 rounded-full hover:bg-gray-100 transition-colors">
+              <svg class="h-6 w-6 sm:h-8 sm:w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-6 sm:mt-8 lg:mt-10">
+            <div>
+              <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Categoría:</span>
+              <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-1">${ticket.category}</p>
+            </div>
+            <div>
+              <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Servicio:</span>
+              <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-1">${ticket.service}</p>
+            </div>
+            <div>
+              <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Asignado a:</span>
+              <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-1">${ticket.assignedTo}</p>
+            </div>
+            <div>
+              <span class="text-base sm:text-lg lg:text-xl font-bold text-gray-700">Creado:</span>
+              <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-1">${ticket.created}</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-8 sm:p-10 lg:p-12">
+          <div class="space-y-6 sm:space-y-8">
+            ${ticket.messages.map((message: any) => `
+              <div class="flex ${message.type === 'client' ? 'justify-end' : 'justify-start'}">
+                <div class="flex items-start space-x-4 sm:space-x-6 max-w-[70%] ${message.type === 'client' ? 'flex-row-reverse space-x-reverse' : ''}">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-sm sm:text-base lg:text-lg font-bold text-blue-600">${message.avatar}</span>
+                  </div>
+                  <div class="rounded-xl p-4 sm:p-6 lg:p-8 ${message.type === 'client' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}">
+                    <div class="flex items-center space-x-3 sm:space-x-4 mb-2 sm:mb-3">
+                      <span class="text-base sm:text-lg lg:text-xl font-bold ${message.type === 'client' ? 'text-blue-100' : 'text-gray-700'}">
+                        ${message.sender}
+                      </span>
+                      <span class="text-sm sm:text-base lg:text-lg ${message.type === 'client' ? 'text-blue-200' : 'text-gray-500'} font-semibold">
+                        ${message.timestamp}
+                      </span>
+                    </div>
+                    <p class="text-base sm:text-lg lg:text-xl leading-relaxed">${message.message}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        ${canSendMessages ? `
+          <div class="border-t border-gray-200 p-6 sm:p-8 lg:p-10 flex-shrink-0">
+            <!-- Archivos adjuntos -->
+            <div id="attached-files-preview" class="hidden mb-4 sm:mb-6">
+              <div id="files-container" class="flex flex-wrap gap-3 sm:gap-4">
+                <!-- Los archivos se mostrarán aquí dinámicamente -->
+              </div>
+            </div>
+
+            <div class="flex items-end space-x-4 sm:space-x-6">
+              <div class="flex-1">
+                <textarea
+                  id="message-input"
+                  placeholder="Escribe tu mensaje aquí..."
+                  class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg lg:text-xl border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="flex flex-col space-y-3 sm:space-y-4">
+                <input
+                  type="file"
+                  id="chat-file-upload"
+                  multiple
+                  accept="image/*,.pdf,.txt"
+                  class="hidden"
+                />
+                <button id="attach-file-btn" class="bg-gray-100 hover:bg-gray-200 p-3 sm:p-4 rounded-xl transition-colors">
+                  <svg class="h-5 w-5 sm:h-6 sm:w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                  </svg>
+                </button>
+                <button id="send-message-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-3 sm:p-4 rounded-xl transition-colors">
+                  <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-3 sm:mt-4">
+              <p class="text-sm sm:text-base lg:text-lg text-gray-500 font-semibold">
+                Presiona Enter para enviar, Shift + Enter para nueva línea
+              </p>
+              <p class="text-sm sm:text-base lg:text-lg text-gray-500 font-semibold">
+                Máximo 5MB por archivo • Formatos: JPG, PNG, GIF, PDF, TXT
+              </p>
+            </div>
+          </div>
+        ` : `
+          <div class="border-t border-gray-200 p-6 sm:p-8 lg:p-10 flex-shrink-0">
+            <div class="bg-green-50 border border-green-200 rounded-xl p-6 sm:p-8 text-center">
+              <div class="flex items-center justify-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <span class="text-green-600 text-base sm:text-lg font-bold">✓</span>
+                </div>
+                <p class="text-base sm:text-lg lg:text-xl text-green-800 font-bold">Este ticket ha sido resuelto</p>
+              </div>
+              <p class="text-sm sm:text-base lg:text-lg text-green-600 mt-2 sm:mt-3 font-semibold">
+                Ya no es posible enviar mensajes. Si necesitas ayuda adicional, crea un nuevo ticket.
+              </p>
+            </div>
+          </div>
+        `}
+      `;
+    }
+
+    // Función para manejar el envío de mensajes en el chat
+    function setupChatHandlers() {
+      const sendMessageBtn = chatModal?.querySelector('#send-message-btn');
+      const messageInput = chatModal?.querySelector('#message-input') as HTMLTextAreaElement | null;
+      const attachFileBtn = chatModal?.querySelector('#attach-file-btn');
+      const fileInput = chatModal?.querySelector('#chat-file-upload') as HTMLInputElement | null;
+      const attachedFilesPreview = chatModal?.querySelector('#attached-files-preview');
+      const filesContainer = chatModal?.querySelector('#files-container');
+      
+      // Función para actualizar vista previa de archivos
+      function updateFilesPreview() {
+        if (!filesContainer || !attachedFilesPreview) return;
+        
+        if (currentAttachedFiles.length > 0) {
+          attachedFilesPreview.classList.remove('hidden');
+          filesContainer.innerHTML = currentAttachedFiles.map((file, index) => `
+            <div class="flex items-center bg-gray-100 rounded-lg px-3 py-2 text-sm">
+              <svg class="h-4 w-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+              </svg>
+              <span class="text-gray-700 truncate max-w-32">${file.name}</span>
+              <button data-file-index="${index}" class="remove-file-btn ml-2 text-gray-400 hover:text-gray-600">
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+          `).join('');
+          
+          // Agregar event listeners para remover archivos
+          filesContainer.querySelectorAll('.remove-file-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const index = parseInt((e.currentTarget as HTMLElement).getAttribute('data-file-index') || '0');
+              currentAttachedFiles.splice(index, 1);
+              updateFilesPreview();
+            });
+          });
+        } else {
+          attachedFilesPreview.classList.add('hidden');
+        }
+      }
+
+      // Event listener para adjuntar archivos
+      attachFileBtn?.addEventListener('click', () => {
+        fileInput?.click();
+      });
+
+      fileInput?.addEventListener('change', (e) => {
+        const files = Array.from((e.target as HTMLInputElement).files || []);
+        const validFiles = files.filter(file => {
+          const isValidType = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain'].includes(file.type);
+          const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
+          return isValidType && isValidSize;
+        });
+        
+        currentAttachedFiles.push(...validFiles);
+        updateFilesPreview();
+      });
+
+      // Event listener para enviar mensaje
+      const sendMessage = () => {
+        const message = messageInput?.value.trim();
+        if (message || currentAttachedFiles.length > 0) {
+          console.log('Enviando mensaje:', message);
+          console.log('Archivos adjuntos:', currentAttachedFiles);
+          
+          // Aquí simularemos agregar el mensaje al chat
+          const chatMessages = chatModal?.querySelector('#chat-messages .space-y-6');
+          if (chatMessages) {
+            const newMessageHTML = `
+              <div class="flex justify-end">
+                <div class="flex items-start space-x-4 sm:space-x-6 max-w-[70%] flex-row-reverse space-x-reverse">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-sm sm:text-base lg:text-lg font-bold text-blue-600">TU</span>
+                  </div>
+                  <div class="rounded-xl p-4 sm:p-6 lg:p-8 bg-blue-600 text-white">
+                    <div class="flex items-center space-x-3 sm:space-x-4 mb-2 sm:mb-3">
+                      <span class="text-base sm:text-lg lg:text-xl font-bold text-blue-100">
+                        Tú
+                      </span>
+                      <span class="text-sm sm:text-base lg:text-lg text-blue-200 font-semibold">
+                        Ahora
+                      </span>
+                    </div>
+                    <p class="text-base sm:text-lg lg:text-xl leading-relaxed">${message}</p>
+                  </div>
+                </div>
+              </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', newMessageHTML);
+            
+            // Scroll hacia abajo
+            const chatContainer = chatModal?.querySelector('#chat-messages');
+            if (chatContainer) {
+              chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+          }
+          
+          // Limpiar campos
+          if (messageInput) messageInput.value = '';
+          currentAttachedFiles = [];
+          updateFilesPreview();
+        }
+      };
+
+      sendMessageBtn?.addEventListener('click', sendMessage);
+
+      // Enter para enviar, Shift+Enter para nueva línea
+      messageInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    }
+
+    // Mostrar/ocultar formulario de crear ticket
+    createTicketBtn?.addEventListener('click', () => {
+      createTicketForm?.classList.remove('hidden');
+      createTicketForm?.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    closeFormBtn?.addEventListener('click', () => {
+      createTicketForm?.classList.add('hidden');
+    });
+
+    cancelFormBtn?.addEventListener('click', () => {
+      createTicketForm?.classList.add('hidden');
+    });
+
+    // Funcionalidad del formulario de creación de tickets
+    if (createTicketForm) {
+      const dropZone = createTicketForm.querySelector('#dropzone');
+      const formFileInput = createTicketForm.querySelector('#ticket-files') as HTMLInputElement;
+      const filesDisplay = createTicketForm.querySelector('#files-display');
+
+      // Variables para archivos del formulario
+      let formFiles: File[] = [];
+
+      // Función para mostrar archivos en el formulario
+      function displayFormFiles() {
+        if (!filesDisplay) return;
+        
+        if (formFiles.length > 0) {
+          filesDisplay.innerHTML = `
+            <div class="mt-4">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Archivos seleccionados:</h4>
+              <div class="space-y-2">
+                ${formFiles.map((file, index) => `
+                  <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <span class="text-sm text-gray-600">${file.name}</span>
+                    <button type="button" data-form-file-index="${index}" class="remove-form-file-btn text-red-500 hover:text-red-700">
+                      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+          
+          // Event listeners para remover archivos
+          filesDisplay.querySelectorAll('.remove-form-file-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const index = parseInt((e.currentTarget as HTMLElement).getAttribute('data-form-file-index') || '0');
+              formFiles.splice(index, 1);
+              displayFormFiles();
+            });
+          });
+        } else {
+          filesDisplay.innerHTML = '';
+        }
+      }
+
+      // Drag & Drop para el formulario
+      dropZone?.addEventListener('click', () => {
+        formFileInput?.click();
+      });
+
+      dropZone?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-500', 'bg-blue-50');
+      });
+
+      dropZone?.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+      });
+
+      dropZone?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+        
+        const files = Array.from(e.dataTransfer?.files || []);
+        const validFiles = files.filter(file => file.size <= 10 * 1024 * 1024); // 10MB
+        formFiles.push(...validFiles);
+        displayFormFiles();
+      });
+
+      formFileInput?.addEventListener('change', (e) => {
+        const files = Array.from((e.target as HTMLInputElement).files || []);
+        const validFiles = files.filter(file => file.size <= 10 * 1024 * 1024); // 10MB
+        formFiles.push(...validFiles);
+        displayFormFiles();
+      });
+
+      // Envío del formulario
+      submitTicketBtn?.addEventListener('click', () => {
+        const subject = (createTicketForm.querySelector('#ticket-subject') as HTMLInputElement)?.value;
+        const category = (createTicketForm.querySelector('#ticket-category') as HTMLSelectElement)?.value;
+        const service = (createTicketForm.querySelector('#ticket-service') as HTMLSelectElement)?.value;
+        const description = (createTicketForm.querySelector('#ticket-description') as HTMLTextAreaElement)?.value;
+
+        if (subject && category && description) {
+          console.log('Creando nuevo ticket:', {
+            subject,
+            category,
+            service,
+            description,
+            files: formFiles
+          });
+          
+          // Simular éxito y cerrar formulario
+          alert('¡Ticket creado exitosamente! Te notificaremos cuando reciba respuesta.');
+          createTicketForm.classList.add('hidden');
+          
+          // Limpiar formulario
+          (createTicketForm.querySelector('#ticket-subject') as HTMLInputElement).value = '';
+          (createTicketForm.querySelector('#ticket-category') as HTMLSelectElement).value = '';
+          (createTicketForm.querySelector('#ticket-service') as HTMLSelectElement).value = '';
+          (createTicketForm.querySelector('#ticket-description') as HTMLTextAreaElement).value = '';
+          formFiles = [];
+          displayFormFiles();
+        } else {
+          alert('Por favor completa todos los campos obligatorios.');
+        }
+      });
+    }
+
+    // Abrir modal de chat para cada ticket
+    ticketDetailBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const ticketId = (e.target as HTMLElement).getAttribute('data-ticket-id');
+        const ticket = getTicketById(ticketId || '');
+        
+        if (ticket && chatModal) {
+          // Resetear archivos adjuntos
+          currentAttachedFiles = [];
+          
+          chatModal.innerHTML = `
+            <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              ${createChatModal(ticket)}
+            </div>
+          `;
+          chatModal.classList.remove('hidden');
+          chatModal.classList.add('flex');
+
+          // Configurar event listeners del modal
+          const closeModalBtn = chatModal.querySelector('#close-modal-btn');
+          closeModalBtn?.addEventListener('click', () => {
+            chatModal.classList.add('hidden');
+            chatModal.classList.remove('flex');
+          });
+
+          // Configurar funcionalidad del chat
+          setupChatHandlers();
+        }
+      });
+    });
+
+    // Cerrar modal al hacer click fuera
+    chatModal?.addEventListener('click', (e: Event) => {
+      if (e.target === chatModal) {
+        chatModal.classList.add('hidden');
+        chatModal.classList.remove('flex');
+      }
+    });
+  });
+</script>

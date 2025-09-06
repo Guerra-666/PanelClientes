@@ -33,13 +33,13 @@ const getStatusBadgeClasses = (status: string) => {
 <Card className="lg:col-span-3">
   <!-- Card Header -->
   <div class="p-8 pb-0">
-    <h3 class="text-xl font-bold text-gray-900 flex items-center mb-3">
-      <svg class="h-6 w-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <h3 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 flex items-center mb-6 sm:mb-8 lg:mb-10">
+      <svg class="h-8 w-8 sm:h-10 sm:w-10 mr-4 sm:mr-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
       Servicios Activos
     </h3>
-    <p class="text-base text-muted-foreground mb-8">Estado de todos los servicios contratados</p>
+    <p class="text-lg sm:text-xl lg:text-2xl text-gray-600 leading-relaxed mb-8">Estado de todos los servicios contratados</p>
   </div>
   
   <!-- Card Content -->
@@ -50,16 +50,16 @@ const getStatusBadgeClasses = (status: string) => {
           <div class="flex items-start justify-between mb-4">
             <div class="flex-1">
               <div class="flex items-center space-x-3 mb-3">
-                <h4 class="text-lg font-semibold text-gray-900">{service.name}</h4>
+                <h4 class="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">{service.name}</h4>
                 <span class={getStatusBadgeClasses(service.status)}>
                   {service.status}
                 </span>
               </div>
-              <p class="text-base text-gray-600">{service.description}</p>
+              <p class="text-base sm:text-lg lg:text-xl text-gray-600">{service.description}</p>
             </div>
           </div>
           
-          <div class="space-y-3 text-base">
+          <div class="space-y-3 text-sm sm:text-base lg:text-lg">
             <div class="flex justify-between">
               <span class="text-gray-500">Inicio:</span>
               <span class="font-medium text-gray-900">{service.startDate}</span>

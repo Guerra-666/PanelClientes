@@ -129,64 +129,58 @@
         "accountManager": "Carlos Mendoza Silva"
       },
       {
-        "id": "SRV-CLOUD-001",
-        "name": "Consultoría Cloud AWS",
-        "type": "project",
-        "status": "En Progreso",
-        "description": "Migración y optimización de infraestructura en Amazon Web Services",
-        "totalPrice": 75000.00,
+        "id": "SRV-EMAIL-001",
+        "name": "Correo Empresarial Avanzado",
+        "type": "individual",
+        "status": "Activo",
+        "description": "Servicio de correo empresarial con funcionalidades avanzadas y alta disponibilidad",
+        "monthlyPrice": 2800.00,
         "currency": "MXN",
         "contractDate": "01 Febrero 2024",
-        "estimatedCompletion": "31 Mayo 2024",
-        "progress": 65,
-        "category": "Cloud Migration",
-        "priority": "high",
-        "milestones": [
+        "nextBilling": "01 Marzo 2024",
+        "autoRenewal": true,
+        "category": "Communication",
+        "priority": "standard",
+        "features": [
           {
-            "name": "Análisis de infraestructura actual",
-            "status": "Completado",
-            "completionDate": "15 Febrero 2024",
-            "description": "Evaluación completa de sistemas existentes"
+            "name": "Cuentas de correo ilimitadas",
+            "description": "Sin límite en el número de cuentas de correo empresarial",
+            "frequency": "Permanente"
           },
           {
-            "name": "Diseño de arquitectura AWS",
-            "status": "Completado", 
-            "completionDate": "01 Marzo 2024",
-            "description": "Arquitectura optimizada para AWS"
+            "name": "Almacenamiento ampliado",
+            "description": "50GB de almacenamiento por cuenta de correo",
+            "allocation": "50GB por cuenta"
           },
           {
-            "name": "Migración de datos y aplicaciones",
-            "status": "En Progreso",
-            "expectedDate": "15 Abril 2024",
-            "description": "Transferencia gradual de sistemas críticos"
+            "name": "Filtros anti-spam avanzados",
+            "description": "Protección avanzada contra spam y phishing",
+            "coverage": "24/7"
           },
           {
-            "name": "Pruebas y optimización",
-            "status": "Pendiente",
-            "expectedDate": "15 Mayo 2024",
-            "description": "Testing exhaustivo y ajustes finales"
+            "name": "Sincronización multiplataforma",
+            "description": "Compatible con Outlook, móviles y aplicaciones web",
+            "deliverable": "Configuración incluida"
           },
           {
-            "name": "Capacitación del equipo",
-            "status": "Pendiente",
-            "expectedDate": "31 Mayo 2024",
-            "description": "Training para el equipo técnico interno"
+            "name": "Respaldo automático",
+            "description": "Respaldo diario de correos con retención de 90 días",
+            "frequency": "Diario"
           }
         ],
         "billing": {
-          "frequency": "milestone",
+          "frequency": "monthly",
           "method": "Transferencia Bancaria",
           "invoiceFormat": "CFDI 4.0",
-          "paymentTerms": "Net 30"
+          "paymentTerms": "Net 15"
         },
-        "technicalContact": "Roberto Silva Martínez",
-        "accountManager": "Carlos Mendoza Silva",
-        "projectManager": "Miguel Hernández"
+        "technicalContact": "Luis Fernando Gómez",
+        "accountManager": "Carlos Mendoza Silva"
       }
     ],
     "billing": {
       "summary": {
-        "totalMonthly": 30499.00,
+        "totalMonthly": 33299.00,
         "currency": "MXN",
         "activeServices": 2,
         "activePackages": 1,
@@ -194,24 +188,10 @@
         "paymentMethod": "Transferencia Bancaria",
         "billingContact": "María González Rodríguez"
       },
-      "breakdown": [
-        {
-          "item": "Paquete Esencial",
-          "amount": 24999.00,
-          "type": "package",
-          "frequency": "monthly"
-        },
-        {
-          "item": "Mantenimiento Web Premium",
-          "amount": 5500.00,
-          "type": "service",
-          "frequency": "monthly"
-        }
-      ],
       "taxes": {
-        "iva": 4879.84,
-        "subtotal": 30499.00,
-        "total": 35378.84
+        "iva": 5327.84,
+        "subtotal": 33299.00,
+        "total": 38626.84
       }
     },
     "serviceHistory": [

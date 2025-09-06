@@ -1,0 +1,348 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PackageCard from "../../components/Services/PackageCard.astro";
+import ServiceCard from "../../components/Services/ServiceCard.astro";
+import BillingSummary from "../../components/Services/BillingSummary.astro";
+
+// Definir la página actual
+const currentPage = "servicios";
+
+// Obtener el parámetro userId de la URL
+const { userId } = Astro.params;
+const userIdParam = userId || "1"; // Default fallback
+
+console.log(`🎯 Servicios Page - User ID: ${userIdParam}`);
+console.log(`📍 URL: ${Astro.url.pathname}`);
+
+// Función para obtener datos de servicios desde API real
+async function fetchServicesData(userId: string) {
+  try {
+    // URL del endpoint real
+    const apiUrl = `https://backend-express-c423b4135ed6.herokuapp.com/api/services/usuario/${userId}`;
+    
+    console.log(`🚀 Fetching services data from API...`);
+    console.log(`📍 API Endpoint: ${apiUrl}`);
+    
+    // Realizar llamada a la API real
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const apiResponse = await response.json();
+    
+    console.log("✅ Services data loaded successfully from API");
+    console.log("📊 API Response structure:", {
+      success: apiResponse.success,
+      hasData: !!apiResponse.data,
+      packages: apiResponse.data?.services?.contractedPackages?.length || 0,
+      individualServices: apiResponse.data?.services?.individualServices?.length || 0
+    });
+    
+    return apiResponse;
+  } catch (error) {
+    console.error(`❌ Error loading services data for user ${userId}:`, error);
+    
+    // Datos fallback en caso de error de API
+    return {
+      success: false,
+      message: `Error al cargar servicios para usuario ${userId}`,
+      data: {
+        services: {
+          contractedPackages: [
+            {
+              id: `PKG-${userId}-001`,
+              name: "Paquete Básico",
+              type: "package",
+              status: "Activo",
+              description: `Servicios básicos para Usuario ${userId}`,
+              monthlyPrice: 15999.00,
+              currency: "MXN",
+              contractDate: "01 Enero 2024",
+              nextBilling: "01 Febrero 2024",
+              remainingMonths: 11,
+              autoRenewal: true,
+              category: "Basic",
+              priority: "standard",
+              includedServices: [
+                {
+                  id: `SRV-${userId}-WEB`,
+                  name: "Sitio web básico",
+                  description: "3 páginas, diseño responsive",
+                  details: { pages: 3, responsive: true }
+                },
+                {
+                  id: `SRV-${userId}-HOST`,
+                  name: "Hosting básico",
+                  description: "Hosting y SSL por 12 meses",
+                  details: { ssl: true, hosting: "Básico - 3GB" }
+                },
+                {
+                  id: `SRV-${userId}-SUP`,
+                  name: "Soporte básico",
+                  description: "Lun-Vie 9:00-17:00",
+                  details: { schedule: "Lun-Vie 9:00-17:00" }
+                }
+              ]
+            }
+          ],
+          individualServices: [
+            {
+              id: `SRV-${userId}-MAINT`,
+              name: "Mantenimiento Web",
+              type: "individual",
+              status: "Activo",
+              description: `Mantenimiento básico para Usuario ${userId}`,
+              monthlyPrice: 3500.00,
+              currency: "MXN",
+              contractDate: "15 Enero 2024",
+              nextBilling: "15 Febrero 2024",
+              autoRenewal: true,
+              category: "Maintenance",
+              priority: "standard",
+              features: [
+                {
+                  name: "Actualizaciones mensuales",
+                  description: "Actualizaciones de seguridad mensuales",
+                  frequency: "Mensual"
+                },
+                {
+                  name: "Respaldos básicos",
+                  description: "Respaldos semanales",
+                  frequency: "Semanal"
+                },
+                {
+                  name: "Soporte email",
+                  description: "Soporte vía email en horario laboral",
+                  allocation: "Email"
+                }
+              ]
+            }
+          ],
+          billing: {
+            summary: {
+              totalMonthly: 19499.00,
+              currency: "MXN",
+              activeServices: 1,
+              activePackages: 1,
+              nextBillingDate: "01 Febrero 2024",
+              paymentMethod: "Transferencia Bancaria",
+              billingContact: `Usuario ${userId}`
+            },
+            taxes: {
+              iva: 3119.84,
+              subtotal: 19499.00,
+              total: 22618.84
+            }
+          }
+        }
+      }
+    };
+  }
+}
+
+// Obtener datos de la API
+const apiResponse = await fetchServicesData(userIdParam);
+
+// Validar respuesta de API
+if (!apiResponse.success) {
+  console.warn(`⚠️ API returned error for user ${userIdParam}:`, apiResponse.message);
+}
+
+// Extraer datos del wrapper 'data' con tipado explícito
+const servicesApiData = apiResponse.data as any;
+
+// Mapear datos para compatibilidad con componentes
+const contractedPackages = (servicesApiData.services?.contractedPackages || []).map((pkg: any) => ({
+  id: pkg.id,
+  name: pkg.name,
+  status: pkg.status,
+  description: pkg.description,
+  monthlyPrice: pkg.monthlyPrice,
+  currency: pkg.currency,
+  contractDate: pkg.contractDate,
+  nextBilling: pkg.nextBilling,
+  remainingMonths: pkg.remainingMonths,
+  includedServices: (pkg.includedServices || []).map((service: any) => ({
+    name: service.name,
+    description: service.description,
+    details: service.details
+  }))
+}));
+
+const individualServices = (servicesApiData.services?.individualServices || [])
+  .filter((service: any) => service.status === "Activo") // Solo servicios activos
+  .map((service: any) => ({
+    id: service.id,
+    name: service.name,
+    status: service.status,
+    description: service.description,
+    monthlyPrice: service.monthlyPrice,
+    totalPrice: service.totalPrice,
+    currency: service.currency,
+    contractDate: service.contractDate,
+    nextBilling: service.nextBilling,
+    autoRenewal: service.autoRenewal,
+    features: service.features || [],
+    progress: service.progress,
+    estimatedCompletion: service.estimatedCompletion
+  }));
+
+const billingData = {
+  summary: servicesApiData.services?.billing?.summary || {
+    totalMonthly: 0,
+    currency: "MXN",
+    activeServices: 0,
+    activePackages: 0,
+    nextBillingDate: "N/A",
+    paymentMethod: "N/A"
+  },
+  taxes: servicesApiData.services?.billing?.taxes || {
+    iva: 0,
+    subtotal: 0,
+    total: 0
+  }
+};
+
+// Función para extraer solo primer nombre y primer apellido
+function getFirstNameLastName(fullName: string): string {
+  if (!fullName || typeof fullName !== 'string') {
+    return 'Usuario';
+  }
+  
+  const nameParts = fullName.trim().split(' ').filter(part => part.length > 0);
+  
+  if (nameParts.length === 0) {
+    return 'Usuario';
+  } else if (nameParts.length === 1) {
+    return nameParts[0];
+  } else {
+    // Primer nombre + primer apellido
+    return `${nameParts[0]} ${nameParts[1]}`;
+  }
+}
+
+// Procesar el nombre para mostrar solo primer nombre y primer apellido
+const displayUserName = getFirstNameLastName(billingData.summary.billingContact || `Usuario ${userIdParam}`);
+---
+
+<Layout currentPage={currentPage} userId={userIdParam} userName={displayUserName}>
+  <div class="max-w-none">
+
+    <!-- Header Section -->
+    <div class="mb-8 sm:mb-10 lg:mb-12">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-5">Mis Servicios Contratados</h1>
+      <p class="text-lg sm:text-xl lg:text-2xl text-gray-600 leading-relaxed">Servicios activos y información de facturación</p>
+    </div>
+
+    <!-- Paquetes Contratados -->
+    {contractedPackages.length > 0 && (
+      <div class="mb-8 sm:mb-10 lg:mb-12">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-6 sm:mb-8 lg:mb-10">Paquetes Contratados</h2>
+        <div class="space-y-6 sm:space-y-8 lg:space-y-10">
+          {contractedPackages.map(pkg => (
+            <PackageCard package={pkg} />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Servicios Individuales -->
+    {individualServices.length > 0 && (
+      <div class="mb-8 sm:mb-10 lg:mb-12">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-6 sm:mb-8 lg:mb-10">Servicios Individuales</h2>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
+          {individualServices.map(service => (
+            <ServiceCard service={service} />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Resumen de Facturación -->
+    <BillingSummary billing={billingData} />
+  </div>
+</Layout>
+
+<script is:inline>
+  function initializeUserNavigation() {
+    const userIdInput = document.getElementById('userIdInput');
+    const goToUserButton = document.getElementById('goToUserButton');
+    
+    if (!userIdInput || !goToUserButton) {
+      console.log('Elementos de navegación de usuario no encontrados');
+      return;
+    }
+
+    // Función para navegar a usuario
+    function goToUser() {
+      const userId = userIdInput.value.trim();
+      
+      if (!userId) {
+        alert('Por favor ingresa un ID de usuario');
+        return;
+      }
+      
+      // Validar que sea un número válido
+      const userIdNumber = parseInt(userId);
+      if (isNaN(userIdNumber) || userIdNumber < 1) {
+        alert('Por favor ingresa un ID de usuario válido (número mayor a 0)');
+        return;
+      }
+      
+      console.log(`Navegando a servicios del usuario: ${userId}`);
+      window.location.href = `/servicios/${userId}`;
+    }
+
+    // Event listeners
+    goToUserButton.addEventListener('click', goToUser);
+    
+    userIdInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        goToUser();
+      }
+    });
+
+    console.log('✅ User navigation initialized for services page');
+  }
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', initializeUserNavigation);
+</script>
+
+<!--
+=== SERVICIOS DINÁMICOS POR USUARIO ===
+
+Esta página implementa un sistema dinámico de servicios por usuario, siguiendo el mismo patrón que Dashboard y Perfil.
+
+🎯 FUNCIONALIDAD PRINCIPAL:
+- URL dinámica: /servicios/[userId]
+- API endpoint real: https://backend-express-c423b4135ed6.herokuapp.com/api/services/usuario/{userId}
+- Datos específicos por usuario
+- Sistema de navegación entre usuarios
+- Fallback robusto en caso de error
+
+📊 ESTRUCTURA DE DATOS:
+- Paquetes contratados por usuario
+- Servicios individuales activos únicamente
+- Información de facturación personalizada
+- Datos fallback con IDs únicos por usuario
+
+🔄 INTEGRACIÓN CONSISTENTE:
+- Mismo patrón de navegación que Dashboard y Perfil
+- Tamaños de letra consistentes
+- Layout y componentes reutilizados
+- Debug info para desarrollo
+
+🚀 CARACTERÍSTICAS:
+- Solo muestra servicios con status "Activo"
+- Navegación rápida entre usuarios frecuentes
+- Input para cambiar de usuario dinámicamente
+- Información específica del usuario en headers
+
+📱 RESPONSIVE:
+- Diseño adaptativo en todos los dispositivos
+- Tamaños de letra escalables
+- Componentes responsive mantenidos
+-->

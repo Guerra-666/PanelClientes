@@ -1,0 +1,73 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import TicketDetailReact from '../../../components/Tickets/TicketDetailReact';
+import { TicketService } from '../../../services/ticketService';
+
+// Obtener parámetros de la URL
+const { userId, ticketId } = Astro.params;
+console.log(`[DETALLE TICKET] Parámetros URL: userId=${userId}, ticketId=${ticketId}`);
+console.log(`[DETALLE TICKET] URL completa: ${Astro.request.url}`);
+
+// Verificar parámetros
+if (!userId || !ticketId) {
+  console.error("[DETALLE TICKET] Parámetros incompletos, redirigiendo a la página principal");
+  return Astro.redirect("/");
+}
+
+// Obtener datos del ticket usando TicketService
+let ticketData = null;
+let error = null;
+
+try {
+  console.log(`[DETALLE TICKET] Intentando obtener ticket ${ticketId} para usuario ${userId}`);
+  
+  // Usar el TicketService para obtener datos completos del ticket incluyendo mensajes
+  ticketData = await TicketService.getTicketById(userId, ticketId);
+  
+  // Si no hay datos del ticket, redirigir
+  if (!ticketData) {
+    console.error(`[DETALLE TICKET] No se encontró el ticket con ID ${ticketId}`);
+    return Astro.redirect(`/tickets/${userId}`);
+  }
+  
+  console.log(`[DETALLE TICKET] Ticket obtenido con éxito: ${ticketData.title}`);
+  
+  // Aseguramos que hay un array de mensajes
+  if (!ticketData.messages) {
+    ticketData.messages = [];
+    console.log(`[DETALLE TICKET] No se encontraron mensajes en el ticket`);
+  } else {
+    console.log(`[DETALLE TICKET] Ticket cargado con ${ticketData.messages.length} mensajes`);
+  }
+  
+  // Opcional: Aquí podríamos cargar datos adicionales si los necesitáramos
+  // Pero por ahora, solo usaremos los datos del ticket y sus mensajes
+  
+} catch (error) {
+  console.error("Error al obtener ticket:", error);
+  return Astro.redirect(`/tickets/${userId}`);
+}
+---
+
+<Layout userName={ticketData.assignedTo || 'Usuario'} currentPage="tickets" userId={userId}>
+  <div class="max-w-7xl mx-auto p-6">
+    <div class="mb-6">
+      <a href={`/tickets/${userId}`} class="inline-flex items-center text-blue-600 hover:text-blue-800">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Volver a Ticketssss
+      </a>
+    </div>
+    
+    <div client:load>
+      <TicketDetailReact 
+        ticket={ticketData}
+        userId={userId}
+        onClose={() => {
+          window.location.href = `/tickets/${userId}`;
+        }} 
+      />
+    </div>
+  </div>
+</Layout>

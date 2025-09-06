@@ -4,7 +4,7 @@ import Card from '../Card.astro';
 export interface Props {
   tickets: Array<{
     title: string;
-    status: 'En progreso' | 'Resuelto';
+    status: 'En Proceso' | 'Resuelto' | 'Pendiente';
     priority: 'high' | 'medium' | 'low';
     dateOpened: string;
     dateResolved?: string;
@@ -18,10 +18,12 @@ const getBadgeClasses = (status: string) => {
   const baseClasses = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
   
   switch (status) {
-    case "En progreso":
+    case "En Proceso":
       return `${baseClasses} border-transparent bg-yellow-500 text-yellow-50 hover:bg-yellow-500/80`;
     case "Resuelto":
       return `${baseClasses} border-transparent bg-green-500 text-green-50 hover:bg-green-500/80`;
+    case "Pendiente":
+      return `${baseClasses} border-transparent bg-orange-500 text-orange-50 hover:bg-orange-500/80`;
     default:
       return `${baseClasses} bg-gray-200 text-gray-700 hover:bg-gray-300`;
   }
@@ -40,13 +42,13 @@ const getBorderColor = (priority: string) => {
 <Card className="lg:col-span-1">
   <!-- Card Header -->
   <div class="p-8 pb-0">
-    <h3 class="text-xl font-bold text-gray-900 flex items-center mb-3">
-      <svg class="h-6 w-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <h3 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 flex items-center mb-6 sm:mb-8 lg:mb-10">
+      <svg class="h-8 w-8 sm:h-10 sm:w-10 mr-4 sm:mr-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8M8 8v8M4 6h16a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
       </svg>
       Últimos Tickets
     </h3>
-    <p class="text-base text-muted-foreground mb-8">Historial reciente de tickets de soporte</p>
+    <p class="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed mb-8">Historial reciente de tickets de soporte</p>
   </div>
   
   <!-- Card Content -->
@@ -55,12 +57,12 @@ const getBorderColor = (priority: string) => {
       {tickets.map(ticket => (
         <div class={`border-l-4 ${getBorderColor(ticket.priority)} pl-4 py-3`}>
           <div class="flex items-center justify-between mb-3">
-            <h4 class="text-base font-medium text-gray-900">{ticket.title}</h4>
+            <h4 class="text-base sm:text-lg lg:text-xl font-medium text-gray-900">{ticket.title}</h4>
             <span class={getBadgeClasses(ticket.status)}>
               {ticket.status}
             </span>
           </div>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm sm:text-base lg:text-lg text-gray-500">
             Abierto: {ticket.dateOpened}
             {ticket.dateResolved && ` • Resuelto: ${ticket.dateResolved}`}
           </p>

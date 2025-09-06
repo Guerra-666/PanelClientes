@@ -14,30 +14,30 @@ const { bankingInfo } = Astro.props;
 
 <Card>
   <div class="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 border-b border-gray-200">
-    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
+    <h3 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 flex items-center">
       <svg class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
       </svg>
       Información Bancaria
     </h3>
-    <p class="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Datos para facturación y pagos</p>
+    <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-1 sm:mt-2">Datos para facturación y pagos</p>
   </div>
   
   <div class="p-4 sm:p-6 lg:p-8">
     <div class="space-y-4 sm:space-y-5 lg:space-y-6">
       <div>
-        <label class="text-sm sm:text-base font-medium text-gray-500 block mb-1 sm:mb-2">Banco</label>
-        <p class="text-sm sm:text-base font-semibold text-gray-900">{bankingInfo.bankName}</p>
+        <label class="text-base sm:text-lg lg:text-xl font-medium text-gray-500 block mb-1 sm:mb-2">Banco</label>
+        <p class="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">{bankingInfo.bankName}</p>
       </div>
       <div>
-        <label class="text-sm sm:text-base font-medium text-gray-500 block mb-1 sm:mb-2">Cuenta</label>
-        <p class="text-sm sm:text-base font-mono bg-gray-100 p-2 sm:p-3 rounded break-all">
+        <label class="text-base sm:text-lg lg:text-xl font-medium text-gray-500 block mb-1 sm:mb-2">Cuenta</label>
+        <p class="text-base sm:text-lg lg:text-xl font-mono bg-gray-100 p-2 sm:p-3 rounded break-all">
           {bankingInfo.accountNumber}
         </p>
       </div>
       <div>
-        <label class="text-sm sm:text-base font-medium text-gray-500 block mb-1 sm:mb-2">CLABE</label>
-        <p class="text-sm sm:text-base font-mono bg-gray-100 p-2 sm:p-3 rounded break-all">{bankingInfo.clabe}</p>
+        <label class="text-base sm:text-lg lg:text-xl font-medium text-gray-500 block mb-1 sm:mb-2">CLABE</label>
+        <p class="text-base sm:text-lg lg:text-xl font-mono bg-gray-100 p-2 sm:p-3 rounded break-all">{bankingInfo.clabe}</p>
       </div>
     </div>
   </div>

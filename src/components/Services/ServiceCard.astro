@@ -36,7 +36,7 @@ function formatPrice(amount: number, currency: string): string {
 
 // Badge styles para status
 const getStatusBadge = (status: string) => {
-  const baseClasses = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold";
+  const baseClasses = "inline-flex items-center rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base font-semibold";
   
   switch (status) {
     case "Activo":
@@ -66,67 +66,67 @@ const getIconColor = (status: string) => {
 ---
 
 <Card className="border-gray-200 hover:border-gray-300 transition-colors">
-  <div class="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6">
-    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-4 sm:mb-6">
-      <div class="flex items-start space-x-3 sm:space-x-4">
-        <div class="p-2 sm:p-3 bg-gray-100 rounded-full flex-shrink-0">
-          <svg class={`h-6 w-6 sm:h-8 sm:w-8 ${getIconColor(service.status)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div class="px-6 sm:px-8 lg:px-10 py-6 sm:py-8 lg:py-10">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 sm:gap-8 mb-6 sm:mb-8">
+      <div class="flex items-start space-x-4 sm:space-x-6">
+        <div class="p-3 sm:p-4 bg-gray-100 rounded-full flex-shrink-0">
+          <svg class={`h-8 w-8 sm:h-10 sm:w-10 ${getIconColor(service.status)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
         </div>
         <div class="min-w-0 flex-1">
           <span class={getStatusBadge(service.status)}>{service.status}</span>
-          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mt-1 sm:mt-2">{service.name}</h3>
-          <p class="text-sm sm:text-base text-gray-600 mt-1">{service.description}</p>
+          <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-2 sm:mt-3">{service.name}</h3>
+          <p class="text-base sm:text-lg lg:text-xl text-gray-600 mt-2 leading-relaxed">{service.description}</p>
         </div>
       </div>
       <div class="text-center sm:text-right flex-shrink-0">
         {service.monthlyPrice ? (
           <>
-            <p class="text-xl sm:text-2xl font-bold text-green-600">{formatPrice(service.monthlyPrice, service.currency)}</p>
-            <p class="text-xs sm:text-sm text-gray-600">por mes</p>
+            <p class="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600">{formatPrice(service.monthlyPrice, service.currency)}</p>
+            <p class="text-sm sm:text-base lg:text-lg text-gray-600">por mes</p>
           </>
         ) : service.totalPrice ? (
           <>
-            <p class="text-xl sm:text-2xl font-bold text-blue-600">{formatPrice(service.totalPrice, service.currency)}</p>
-            <p class="text-xs sm:text-sm text-gray-600">proyecto total</p>
+            <p class="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">{formatPrice(service.totalPrice, service.currency)}</p>
+            <p class="text-sm sm:text-base lg:text-lg text-gray-600">proyecto total</p>
           </>
         ) : null}
       </div>
     </div>
 
     <!-- Información de vigencia/progreso -->
-    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg space-y-1.5 sm:space-y-2 mb-4 sm:mb-6">
-      <div class="flex justify-between text-xs sm:text-sm">
+    <div class="bg-gray-50 p-4 sm:p-6 lg:p-8 rounded-lg space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+      <div class="flex justify-between text-sm sm:text-base lg:text-lg">
         <span class="text-gray-600">Fecha de contratación:</span>
         <span class="font-medium">{service.contractDate}</span>
       </div>
       {service.nextBilling && (
-        <div class="flex justify-between text-xs sm:text-sm">
+        <div class="flex justify-between text-sm sm:text-base lg:text-lg">
           <span class="text-gray-600">Próxima facturación:</span>
           <span class="font-medium">{service.nextBilling}</span>
         </div>
       )}
       {service.estimatedCompletion && (
-        <div class="flex justify-between text-xs sm:text-sm">
+        <div class="flex justify-between text-sm sm:text-base lg:text-lg">
           <span class="text-gray-600">Fecha estimada de finalización:</span>
           <span class="font-medium">{service.estimatedCompletion}</span>
         </div>
       )}
       {service.progress !== undefined && (
-        <div class="space-y-1">
-          <div class="flex justify-between text-xs sm:text-sm">
+        <div class="space-y-2 sm:space-y-3">
+          <div class="flex justify-between text-sm sm:text-base lg:text-lg">
             <span class="text-gray-600">Progreso:</span>
             <span class="font-medium">{service.progress}%</span>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style={`width: ${service.progress}%`}></div>
+          <div class="w-full bg-gray-200 rounded-full h-3 sm:h-4">
+            <div class="bg-blue-600 h-3 sm:h-4 rounded-full transition-all duration-300" style={`width: ${service.progress}%`}></div>
           </div>
         </div>
       )}
       {service.autoRenewal !== undefined && (
-        <div class="flex justify-between text-xs sm:text-sm">
+        <div class="flex justify-between text-sm sm:text-base lg:text-lg">
           <span class="text-gray-600">Renovación:</span>
           <span class="font-medium text-green-600">
             {service.autoRenewal ? "Renovación automática" : "Renovación manual"}
@@ -137,20 +137,20 @@ const getIconColor = (status: string) => {
 
     <!-- Características del servicio -->
     {service.features && service.features.length > 0 && (
-      <div class="space-y-3 sm:space-y-4">
-        <h4 class="font-semibold text-sm sm:text-base text-gray-700">Características:</h4>
-        <div class="space-y-2 sm:space-y-3">
+      <div class="space-y-4 sm:space-y-6">
+        <h4 class="font-semibold text-lg sm:text-xl lg:text-2xl text-gray-700">Características:</h4>
+        <div class="space-y-3 sm:space-y-4">
           {service.features.map(feature => (
-            <div class="flex items-start space-x-2 sm:space-x-3">
-              <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-600 rounded-full mt-1.5 sm:mt-2 flex-shrink-0"></div>
+            <div class="flex items-start space-x-3 sm:space-x-4">
+              <div class="w-2 h-2 sm:w-3 sm:h-3 bg-green-600 rounded-full mt-2 sm:mt-2.5 flex-shrink-0"></div>
               <div class="min-w-0 flex-1">
-                <p class="text-xs sm:text-sm font-medium text-gray-900">{feature.name}</p>
-                <p class="text-xs sm:text-sm text-gray-600 mt-0.5">{feature.description}</p>
+                <p class="text-base sm:text-lg font-medium text-gray-900">{feature.name}</p>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600 mt-1 leading-relaxed">{feature.description}</p>
                 {feature.frequency && (
-                  <p class="text-xs text-blue-600 mt-0.5">Frecuencia: {feature.frequency}</p>
+                  <p class="text-sm sm:text-base text-blue-600 mt-1">Frecuencia: {feature.frequency}</p>
                 )}
                 {feature.allocation && (
-                  <p class="text-xs text-green-600 mt-0.5">{feature.allocation}</p>
+                  <p class="text-sm sm:text-base text-green-600 mt-1">{feature.allocation}</p>
                 )}
               </div>
             </div>

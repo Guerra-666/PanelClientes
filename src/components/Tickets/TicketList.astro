@@ -1,0 +1,301 @@
+---
+import type { TicketData } from '../../services/ticketService';
+
+interface Props {
+  userId: string;
+  ticketsData: TicketData;
+  showOnlyRecent?: boolean;
+}
+
+const { userId, ticketsData, showOnlyRecent = true } = Astro.props;
+
+// Depuración
+console.log('TicketList recibió ticketsData:', JSON.stringify(ticketsData));
+console.log('Usuario:', userId);
+console.log('ShowOnlyRecent:', showOnlyRecent);
+
+// Verificar que ticketsData y sus propiedades son válidas
+const hasValidData = ticketsData && ticketsData.tickets && Array.isArray(ticketsData.tickets);
+console.log('¿Datos válidos?', hasValidData);
+
+// Si showOnlyRecent es true, mostrar solo los 3 tickets más recientes
+const ticketsToShow = hasValidData 
+  ? (showOnlyRecent ? ticketsData.tickets.slice(0, 3) : ticketsData.tickets) 
+  : [];
+---
+
+<div class="space-y-6">
+  <!-- Create Ticket Button -->
+  <div class="flex justify-end">
+    <button
+      id="create-ticket-btn"
+      class="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white text-base sm:text-lg font-semibold rounded-xl transition-colors"
+    >
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Crear Ticket
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-900">Total Tickets</h3>
+        <span class="text-blue-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{hasValidData ? ticketsData.stats?.total || 0 : 0}</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-900">Pendientes</h3>
+        <span class="text-yellow-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{hasValidData ? ticketsData.stats?.pendientes || 0 : 0}</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-900">En Progreso</h3>
+        <span class="text-orange-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{hasValidData ? ticketsData.stats?.enProgreso || 0 : 0}</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-900">Resueltos</h3>
+        <span class="text-green-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{hasValidData ? ticketsData.stats?.resueltos || 0 : 0}</p>
+    </div>
+  </div>
+
+  <!-- Tickets List -->
+  <div class="space-y-4 sm:space-y-6">
+    {ticketsToShow.map((ticket: any) => (
+      <a 
+        href={`/tickets/${userId}/${ticket.id}`}
+        class="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+        data-ticket-id={ticket.id}
+      >
+        <div class="p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center space-x-4">
+              <span class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
+                ticket.status === "En Progreso" ? "bg-orange-100 text-orange-800" :
+                ticket.status === "Resuelto" ? "bg-green-100 text-green-800" :
+                "bg-yellow-100 text-yellow-800"
+              }`}>
+                {ticket.status}
+              </span>
+              {ticket.priority && (
+                <span class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
+                  ticket.priority === "Alta" ? "bg-red-100 text-red-800" :
+                  ticket.priority === "Media" ? "bg-orange-100 text-orange-800" :
+                  "bg-blue-100 text-blue-800"
+                }`}>
+                  {ticket.priority}
+                </span>
+              )}
+              <span class="text-sm text-gray-500 font-medium">#{ticket.id}</span>
+            </div>
+            <span class="text-sm text-gray-500">
+              Creado: {new Date(ticket.created).toLocaleDateString()}
+            </span>
+          </div>
+
+          <h3 class="mt-2 text-lg font-semibold text-gray-900">
+            {ticket.title}
+          </h3>
+
+          <p class="mt-2 text-gray-600 line-clamp-2">
+            {ticket.description}
+          </p>
+
+          <div class="mt-4 flex flex-wrap gap-4">
+            <div class="flex items-center text-sm text-gray-500">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+              </svg>
+              {ticket.category}
+            </div>
+            <div class="flex items-center text-sm text-gray-500">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+              </svg>
+              {ticket.service}
+            </div>
+            <div class="flex items-center text-sm text-gray-500">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              {ticket.assignedTo}
+            </div>
+            <div class="flex items-center text-sm text-gray-500">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Última actualización: {new Date(ticket.lastUpdate).toLocaleDateString()}
+            </div>
+          </div>
+        </div>
+      </a>
+    ))}
+
+    {/* Botón para mostrar más tickets si hay más de 3 y showOnlyRecent es true */}
+    {showOnlyRecent && ticketsData.tickets.length > 3 && (
+      <div class="text-center mt-6">
+        <button
+          id="view-more-btn"
+          class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+        >
+          Ver más tickets
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
+<script>
+  // Función para mostrar todos los tickets cuando se hace clic en "Ver más"
+  document.addEventListener('DOMContentLoaded', () => {
+    const viewMoreBtn = document.getElementById('view-more-btn');
+    
+    if (viewMoreBtn) {
+      viewMoreBtn.addEventListener('click', async () => {
+        // Obtener el userId de la página
+        const userIdElement = document.querySelector('[data-userid]');
+        const userId = userIdElement?.getAttribute('data-userid');
+        
+        if (!userId) return;
+        
+        try {
+          // Obtener todos los tickets
+          const response = await fetch(`/api/tickets/usuario/${userId}`);
+          if (!response.ok) {
+            throw new Error('Error al cargar tickets adicionales');
+          }
+          
+          const data = await response.json();
+          const allTickets = data.tickets || [];
+          
+          if (allTickets.length > 3) {
+            // Crear elementos para los tickets adicionales
+            const ticketsContainer = document.querySelector('.space-y-4.sm\\:space-y-6');
+            
+            // Ocultar el botón "Ver más"
+            const parentDiv = viewMoreBtn.closest('div');
+            if (parentDiv) {
+              parentDiv.style.display = 'none';
+            }
+            
+            // Mostrar los tickets restantes (a partir del 4to)
+            allTickets.slice(3).forEach((ticket: any) => {
+              // Crear el elemento del ticket
+              const ticketElement = createTicketElement(ticket, userId);
+              ticketsContainer?.appendChild(ticketElement);
+            });
+          }
+        } catch (error) {
+          console.error('Error cargando más tickets:', error);
+        }
+      });
+    }
+  });
+  
+  // Función para crear el elemento HTML de un ticket
+  function createTicketElement(ticket: any, userId: string) {
+    const ticketElement = document.createElement('a');
+    ticketElement.href = `/tickets/${userId}/${ticket.id}`;
+    ticketElement.className = 'block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow';
+    ticketElement.setAttribute('data-ticket-id', ticket.id);
+    
+    const statusClass = 
+      ticket.status === 'En Progreso' ? 'bg-orange-100 text-orange-800' :
+      ticket.status === 'Resuelto' ? 'bg-green-100 text-green-800' :
+      'bg-yellow-100 text-yellow-800';
+    
+    const priorityClass = 
+      ticket.priority === 'Alta' ? 'bg-red-100 text-red-800' :
+      ticket.priority === 'Media' ? 'bg-orange-100 text-orange-800' :
+      'bg-blue-100 text-blue-800';
+    
+    ticketElement.innerHTML = `
+      <div class="p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="flex items-center space-x-4">
+            <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${statusClass}">
+              ${ticket.status}
+            </span>
+            <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${priorityClass}">
+              ${ticket.priority}
+            </span>
+            <span class="text-sm text-gray-500 font-medium">#${ticket.id}</span>
+          </div>
+          <span class="text-sm text-gray-500">
+            Creado: ${ticket.created}
+          </span>
+        </div>
+
+        <h3 class="mt-2 text-lg font-semibold text-gray-900">
+          ${ticket.title}
+        </h3>
+
+        <p class="mt-2 text-gray-600 line-clamp-2">
+          ${ticket.description}
+        </p>
+
+        <div class="mt-4 flex flex-wrap gap-4">
+          <div class="flex items-center text-sm text-gray-500">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+            </svg>
+            ${ticket.category}
+          </div>
+          <div class="flex items-center text-sm text-gray-500">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+            </svg>
+            ${ticket.service}
+          </div>
+          <div class="flex items-center text-sm text-gray-500">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            ${ticket.assignedTo}
+          </div>
+          <div class="flex items-center text-sm text-gray-500">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Última actualización: ${ticket.lastUpdate}
+          </div>
+        </div>
+      </div>
+    `;
+    
+    return ticketElement;
+  }
+</script>

@@ -1,0 +1,73 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import TicketsReactMain from "../../components/Tickets/TicketsReactMain";
+import { TicketService } from "../../services/ticketService";
+
+const { userId } = Astro.params;
+
+if (!userId) {
+  return Astro.redirect("/");
+}
+
+// Obtener datos de tickets usando el servicio
+let ticketsData;
+let userName = "Usuario";
+
+try {
+  // Obtener los tickets agrupados por usuario usando el nuevo endpoint
+  ticketsData = await TicketService.getTicketsGroupedByUser(userId);
+  
+  if (ticketsData) {
+    userName = ticketsData.userName;
+    console.log(`Tickets cargados para el usuario ${userName}`);
+  } else {
+    console.error('No se pudieron cargar los tickets del usuario');
+    
+    // Datos por defecto si falla la carga
+    ticketsData = {
+      userName: "Usuario",
+      userAvatar: "U",
+      ticketsStats: {
+        activos: 0,
+        resueltos: 0,
+        enProgreso: 0,
+        total: 0,
+        tiempoRespuesta: "N/A"
+      },
+      tickets: []
+    };
+  }
+} catch (error) {
+  console.error("Error al obtener tickets:", error);
+  
+  // Datos por defecto en caso de error
+  ticketsData = {
+    userName: "Usuario",
+    userAvatar: "U",
+    ticketsStats: {
+      activos: 0,
+      resueltos: 0,
+      enProgreso: 0,
+      total: 0,
+      tiempoRespuesta: "N/A"
+    },
+    tickets: []
+  };
+}
+---
+
+<Layout userName={userName} currentPage="tickets" userId={userId}>
+  <div client:load>
+    <TicketsReactMain
+      ticketsData={ticketsData}
+      userId={userId}
+    />
+  </div>
+</Layout>
+
+<!-- Script para pasar datos al JavaScript del componente -->
+<script define:vars={{ ticketsData, userId }}>
+  // Hacer los datos disponibles globalmente para el JavaScript del componente
+  window.ticketsData = ticketsData;
+  window.currentUserId = userId;
+</script>

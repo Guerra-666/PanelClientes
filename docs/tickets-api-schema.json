@@ -1,0 +1,335 @@
+{
+  "api_endpoint": "https://backend-express-c423b4135ed6.herokuapp.com/api/tickets/usuario/{userId}",
+  "descripcion": "Endpoint para obtener tickets de soporte de un usuario específico",
+  "metodo": "GET",
+  "ejemplo_respuesta": {
+    "ticketsStats": {
+      "activos": 2,
+      "resueltos": 8,
+      "enProgreso": 1,
+      "pendientes": 0,
+      "total": 10,
+      "promedioRespuesta": "2.5 horas",
+      "satisfaccionPromedio": 4.8
+    },
+    "tickets": [
+      {
+        "id": "TK-2024-0015",
+        "numero": 15,
+        "title": "Problema con certificado SSL en el sitio web",
+        "description": "El navegador muestra advertencia de seguridad al acceder al sitio web principal",
+        "status": "En Progreso",
+        "priority": "Alta",
+        "category": "Sitio Web",
+        "subcategory": "Certificados SSL",
+        "service": "Paquete Esencial",
+        "serviceId": "PKG-ESS-001",
+        "assignedTo": "Carlos Mendoza",
+        "assignedToId": "EMP-001",
+        "assignedToAvatar": "CM",
+        "assignedToEmail": "carlos.mendoza@softconsult.com",
+        "created": "28 de enero de 2024",
+        "createdTimestamp": "2024-01-28T14:30:00Z",
+        "lastUpdate": "Hace 2 horas",
+        "lastUpdateTimestamp": "2024-01-28T16:30:00Z",
+        "estimatedResolution": "2-4 horas",
+        "tags": ["ssl", "certificado", "seguridad", "urgente"],
+        "clientRating": null,
+        "internalNotes": "Certificado expirado - renovación en proceso",
+        "attachments": [
+          {
+            "id": "ATT-001",
+            "filename": "error_ssl.png",
+            "url": "/uploads/tickets/TK-2024-0015/error_ssl.png",
+            "size": "245KB",
+            "uploadedBy": "María González",
+            "uploadedAt": "2024-01-28T14:30:00Z"
+          }
+        ],
+        "messages": [
+          {
+            "id": 1,
+            "sender": "María González",
+            "senderId": "CLI-2024-001234",
+            "type": "client",
+            "message": "Hola, tengo un problema con el certificado SSL de nuestro sitio web. Los navegadores muestran una advertencia de seguridad cuando intentamos acceder. Adjunto captura de pantalla del error.",
+            "timestamp": "28 de enero de 2024, 14:30",
+            "timestampISO": "2024-01-28T14:30:00Z",
+            "avatar": "MG",
+            "attachments": ["ATT-001"],
+            "isRead": true,
+            "isPrivate": false
+          },
+          {
+            "id": 2,
+            "sender": "Carlos Mendoza",
+            "senderId": "EMP-001",
+            "type": "support",
+            "message": "Hola María, gracias por contactarnos. He recibido tu reporte y voy a revisar el estado del certificado SSL inmediatamente. Te mantendré informada del progreso.",
+            "timestamp": "28 de enero de 2024, 14:45",
+            "timestampISO": "2024-01-28T14:45:00Z",
+            "avatar": "CM",
+            "attachments": [],
+            "isRead": true,
+            "isPrivate": false,
+            "actionTaken": "Investigación iniciada"
+          },
+          {
+            "id": 3,
+            "sender": "Carlos Mendoza",
+            "senderId": "EMP-001",
+            "type": "support",
+            "message": "Hemos identificado el problema. El certificado SSL expiró ayer. Estamos renovándolo ahora mismo. El proceso tomará aproximadamente 2-4 horas.",
+            "timestamp": "28 de enero de 2024, 16:30",
+            "timestampISO": "2024-01-28T16:30:00Z",
+            "avatar": "CM",
+            "attachments": [],
+            "isRead": true,
+            "isPrivate": false,
+            "actionTaken": "Renovación de certificado iniciada"
+          }
+        ],
+        "timeline": [
+          {
+            "id": 1,
+            "action": "Ticket creado",
+            "timestamp": "2024-01-28T14:30:00Z",
+            "by": "María González",
+            "byType": "client"
+          },
+          {
+            "id": 2,
+            "action": "Asignado a Carlos Mendoza",
+            "timestamp": "2024-01-28T14:35:00Z",
+            "by": "Sistema",
+            "byType": "system"
+          },
+          {
+            "id": 3,
+            "action": "Estado cambiado a En Progreso",
+            "timestamp": "2024-01-28T14:45:00Z",
+            "by": "Carlos Mendoza",
+            "byType": "support"
+          },
+          {
+            "id": 4,
+            "action": "Prioridad elevada a Alta",
+            "timestamp": "2024-01-28T15:00:00Z",
+            "by": "Carlos Mendoza",
+            "byType": "support"
+          }
+        ]
+      },
+      {
+        "id": "TK-2024-0016",
+        "numero": 16,
+        "title": "Solicitud de nueva cuenta de correo electrónico",
+        "description": "Necesitamos crear una cuenta adicional: ventas@techcorp.com para el departamento de ventas",
+        "status": "Resuelto",
+        "priority": "Media",
+        "category": "Correo Electrónico",
+        "subcategory": "Nuevas Cuentas",
+        "service": "Paquete Esencial",
+        "serviceId": "PKG-ESS-001",
+        "assignedTo": "Ana Martínez",
+        "assignedToId": "EMP-002",
+        "assignedToAvatar": "AM",
+        "assignedToEmail": "ana.martinez@softconsult.com",
+        "created": "29 de enero de 2024",
+        "createdTimestamp": "2024-01-29T09:15:00Z",
+        "lastUpdate": "Resuelto satisfactoriamente",
+        "lastUpdateTimestamp": "2024-01-29T11:15:00Z",
+        "resolvedAt": "2024-01-29T11:15:00Z",
+        "resolutionTime": "2 horas",
+        "estimatedResolution": "1-2 horas",
+        "tags": ["correo", "nueva-cuenta", "configuracion"],
+        "clientRating": 5,
+        "clientFeedback": "Excelente servicio, muy rápido y profesional",
+        "internalNotes": "Cuenta creada exitosamente - credenciales enviadas por correo separado",
+        "attachments": [],
+        "messages": [
+          {
+            "id": 1,
+            "sender": "María González",
+            "senderId": "CLI-2024-001234",
+            "type": "client",
+            "message": "Buenos días, necesitamos crear una nueva cuenta de correo: ventas@techcorp.com. La cuenta debe tener acceso completo y configurarse con reenvío automático a maria.gonzalez@techcorp.com",
+            "timestamp": "29 de enero de 2024, 09:15",
+            "timestampISO": "2024-01-29T09:15:00Z",
+            "avatar": "MG",
+            "attachments": [],
+            "isRead": true,
+            "isPrivate": false
+          },
+          {
+            "id": 2,
+            "sender": "Ana Martínez",
+            "senderId": "EMP-002",
+            "type": "support",
+            "message": "¡Hola María! Perfecto, voy a crear la cuenta de correo ventas@techcorp.com con las especificaciones que solicitas. Te confirmo en cuanto esté lista.",
+            "timestamp": "29 de enero de 2024, 10:30",
+            "timestampISO": "2024-01-29T10:30:00Z",
+            "avatar": "AM",
+            "attachments": [],
+            "isRead": true,
+            "isPrivate": false,
+            "actionTaken": "Creación de cuenta iniciada"
+          },
+          {
+            "id": 3,
+            "sender": "Ana Martínez",
+            "senderId": "EMP-002",
+            "type": "support",
+            "message": "✅ ¡Listo! La cuenta ventas@techcorp.com ha sido creada exitosamente. El reenvío automático a tu cuenta principal ya está configurado. Te envío las credenciales por correo separado.",
+            "timestamp": "29 de enero de 2024, 11:15",
+            "timestampISO": "2024-01-29T11:15:00Z",
+            "avatar": "AM",
+            "attachments": [],
+            "isRead": true,
+            "isPrivate": false,
+            "actionTaken": "Ticket resuelto - cuenta creada"
+          }
+        ],
+        "timeline": [
+          {
+            "id": 1,
+            "action": "Ticket creado",
+            "timestamp": "2024-01-29T09:15:00Z",
+            "by": "María González",
+            "byType": "client"
+          },
+          {
+            "id": 2,
+            "action": "Asignado a Ana Martínez",
+            "timestamp": "2024-01-29T09:20:00Z",
+            "by": "Sistema",
+            "byType": "system"
+          },
+          {
+            "id": 3,
+            "action": "Estado cambiado a En Progreso",
+            "timestamp": "2024-01-29T10:30:00Z",
+            "by": "Ana Martínez",
+            "byType": "support"
+          },
+          {
+            "id": 4,
+            "action": "Ticket resuelto",
+            "timestamp": "2024-01-29T11:15:00Z",
+            "by": "Ana Martínez",
+            "byType": "support"
+          },
+          {
+            "id": 5,
+            "action": "Cliente calificó con 5 estrellas",
+            "timestamp": "2024-01-29T12:00:00Z",
+            "by": "María González",
+            "byType": "client"
+          }
+        ]
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 3,
+      "totalTickets": 25,
+      "itemsPerPage": 10,
+      "hasNextPage": true,
+      "hasPreviousPage": false
+    },
+    "filters": {
+      "availableStatuses": ["Abierto", "En Progreso", "Pendiente Cliente", "Resuelto", "Cerrado"],
+      "availablePriorities": ["Baja", "Media", "Alta", "Crítica"],
+      "availableCategories": [
+        "Soporte Técnico",
+        "Sitio Web", 
+        "Correo Electrónico",
+        "Hosting/Dominio",
+        "Facturación",
+        "Otro"
+      ],
+      "availableServices": [
+        {
+          "id": "PKG-ESS-001",
+          "name": "Paquete Esencial"
+        },
+        {
+          "id": "PKG-PRE-001", 
+          "name": "Mantenimiento Web Premium"
+        },
+        {
+          "id": "HST-PRE-001",
+          "name": "Hosting Premium"
+        }
+      ]
+    }
+  },
+  "endpoints_adicionales": {
+    "crear_ticket": {
+      "url": "https://backend-express-c423b4135ed6.herokuapp.com/api/tickets/usuario/{userId}",
+      "metodo": "POST",
+      "body": {
+        "title": "string",
+        "description": "string",
+        "category": "string",
+        "subcategory": "string (opcional)",
+        "priority": "string",
+        "serviceId": "string (opcional)",
+        "attachments": "array de archivos (opcional)"
+      }
+    },
+    "enviar_mensaje": {
+      "url": "https://backend-express-c423b4135ed6.herokuapp.com/api/tickets/{ticketId}/messages",
+      "metodo": "POST", 
+      "body": {
+        "message": "string",
+        "attachments": "array de archivos (opcional)",
+        "isPrivate": "boolean (default: false)"
+      }
+    },
+    "cerrar_ticket": {
+      "url": "https://backend-express-c423b4135ed6.herokuapp.com/api/tickets/{ticketId}/close",
+      "metodo": "PATCH",
+      "body": {
+        "rating": "number (1-5, opcional)",
+        "feedback": "string (opcional)"
+      }
+    },
+    "subir_archivo": {
+      "url": "https://backend-express-c423b4135ed6.herokuapp.com/api/tickets/{ticketId}/upload",
+      "metodo": "POST",
+      "content-type": "multipart/form-data",
+      "body": {
+        "file": "archivo",
+        "messageId": "number (opcional - si es para un mensaje específico)"
+      }
+    }
+  },
+  "configuracion_chat": {
+    "max_file_size": "5MB",
+    "allowed_file_types": [
+      "image/jpeg",
+      "image/png", 
+      "image/gif",
+      "application/pdf",
+      "text/plain",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ],
+    "max_files_per_message": 5,
+    "message_max_length": 5000,
+    "auto_refresh_interval": 30000,
+    "typing_indicator_timeout": 3000
+  },
+  "notificaciones": {
+    "email_templates": {
+      "nuevo_ticket": "Nuevo ticket creado #{ticketId}",
+      "respuesta_soporte": "Respuesta a tu ticket #{ticketId}",
+      "ticket_resuelto": "Tu ticket #{ticketId} ha sido resuelto"
+    },
+    "webhook_urls": {
+      "slack": "https://hooks.slack.com/services/...",
+      "teams": "https://outlook.office.com/webhook/..."
+    }
+  }
+}

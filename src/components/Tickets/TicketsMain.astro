@@ -1,0 +1,396 @@
+---
+import { Send, Paperclip, ChevronLeft, X } from 'lucide-astro';
+
+interface Props {
+  ticketsData: {
+    ticketsStats: {
+      activos: number;
+      resueltos: number;
+      enProgreso: number;
+      total: number;
+    };
+    tickets: Array<{
+      id: string;
+      title: string;
+      description: string;
+      status: string;
+      category: string;
+      service: string;
+      assignedTo: string;
+      created: string;
+      lastUpdate: string;
+      priority: string;
+      messages?: Array<{
+        id: number;
+        sender: string;
+        type: string;
+        message: string;
+        timestamp: string;
+        avatar: string;
+      }>;
+    }>;
+  };
+  userId: string;
+  currentPage?: string;
+}
+
+const { ticketsData, userId, currentPage = "tickets" } = Astro.props;
+
+// Función para obtener el color según el estado
+function getStatusColor(status: string): string {
+  switch (status.toLowerCase()) {
+    case 'en progreso':
+      return 'bg-orange-100 text-orange-800 border-orange-500';
+    case 'resuelto':
+      return 'bg-green-100 text-green-800 border-green-500';
+    default:
+      return 'bg-yellow-100 text-yellow-800 border-yellow-500';
+  }
+}
+
+// Función para obtener el color según la prioridad
+function getPriorityBadgeColor(priority: string): string {
+  switch (priority.toLowerCase()) {
+    case 'alta':
+      return 'bg-red-100 text-red-800';
+    case 'media':
+      return 'bg-orange-100 text-orange-800';
+    default:
+      return 'bg-blue-100 text-blue-800';
+  }
+}
+---
+
+<div class="p-6">
+  <!-- Encabezado -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Panel de Tickets</h1>
+    <button
+      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        ></path>
+      </svg>
+      Nuevo Ticket
+    </button>
+  </div>
+
+  <!-- Resumen de Tickets -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Total de Tickets -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">Total Tickets</h3>
+        <span class="text-blue-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{ticketsData.ticketsStats.total}</p>
+    </div>
+
+    <!-- Tickets Activos -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">Activos</h3>
+        <span class="text-yellow-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{ticketsData.ticketsStats.activos}</p>
+    </div>
+
+    <!-- Tickets En Progreso -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">En Progreso</h3>
+        <span class="text-orange-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{ticketsData.ticketsStats.enProgreso}</p>
+    </div>
+
+    <!-- Tickets Resueltos -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">Resueltos</h3>
+        <span class="text-green-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-3xl font-bold text-gray-900">{ticketsData.ticketsStats.resueltos}</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+    <div class="flex flex-wrap gap-4">
+      <select
+        id="statusFilter"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg px-4 py-2"
+      >
+        <option value="">Todos los estados</option>
+        <option value="Pendiente">Pendientes</option>
+        <option value="En Progreso">En Progreso</option>
+        <option value="Resuelto">Resueltos</option>
+      </select>
+
+      <select
+        id="priorityFilter"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg px-4 py-2"
+      >
+        <option value="">Todas las prioridades</option>
+        <option value="Alta">Alta</option>
+        <option value="Media">Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar tickets..."
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg px-4 py-2 flex-grow"
+      />
+    </div>
+  </div>
+
+  <!-- Lista de Tickets -->
+  <div class="space-y-4">
+    {
+      ticketsData.tickets.length === 0 ? (
+        <div class="text-center py-12 bg-white rounded-xl shadow-sm">
+          <svg
+            class="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No hay tickets</h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Comienza creando un nuevo ticket.
+          </p>
+        </div>
+      ) : (
+        ticketsData.tickets.map((ticket: any) => (
+          <div class={`bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 ${getStatusColor(ticket.status)}`}>
+            <div class="p-6">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <span class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(ticket.status)}`}>
+                    {ticket.status}
+                  </span>
+                  <span class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${getPriorityBadgeColor(ticket.priority)}`}>
+                    {ticket.priority}
+                  </span>
+                  <span class="text-sm text-gray-500">#{ticket.id}</span>
+                </div>
+                <span class="text-sm text-gray-500">{ticket.created}</span>
+              </div>
+
+              <h3 class="mt-2 text-lg font-semibold text-gray-900">{ticket.title}</h3>
+              <p class="mt-2 text-gray-600 line-clamp-2">{ticket.description}</p>
+
+              <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span class="font-medium text-gray-700">Categoría:</span>
+                  <p class="text-gray-600">{ticket.category}</p>
+                </div>
+                <div>
+                  <span class="font-medium text-gray-700">Servicio:</span>
+                  <p class="text-gray-600">{ticket.service}</p>
+                </div>
+                <div>
+                  <span class="font-medium text-gray-700">Asignado a:</span>
+                  <p class="text-gray-600">{ticket.assignedTo}</p>
+                </div>
+              </div>
+
+              {ticket.messages && ticket.messages.length > 0 && (
+                <div class="mt-4 bg-gray-50 p-3 rounded-lg">
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                        <span class="text-sm font-medium">{ticket.messages[ticket.messages.length - 1].avatar}</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-2">
+                        <span class="text-sm font-medium">{ticket.messages[ticket.messages.length - 1].sender}</span>
+                        <span class="text-xs text-gray-500">{ticket.messages[ticket.messages.length - 1].timestamp}</span>
+                      </div>
+                      <p class="text-sm text-gray-700 line-clamp-2">{ticket.messages[ticket.messages.length - 1].message}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div class="mt-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class={`w-2 h-2 rounded-full ${ticket.status === 'Resuelto' ? 'bg-green-500' : 'bg-orange-500'}`}></div>
+                  <span class="text-sm text-gray-600">
+                    {ticket.status === 'Resuelto' ? 'Resuelto satisfactoriamente' : `Última actualización: ${ticket.lastUpdate}`}
+                  </span>
+                </div>
+
+                <a
+                  href={`/tickets/${userId}/${ticket.id}`}
+                  class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  Ver detalles
+                </a>
+              </div>
+            </div>
+          </div>
+        ))
+      )
+    }
+  </div>
+</div>
+
+<script>
+  let selectedTicketId: string | null = null;
+  const tickets = document.querySelectorAll('[data-ticket-id]');
+
+  // Manejar selección de tickets
+  tickets.forEach((ticket) => {
+    ticket.addEventListener('click', (e) => {
+      const ticketId = (e.currentTarget as HTMLElement).dataset.ticketId;
+      if (ticketId) {
+        selectedTicketId = ticketId;
+      }
+    });
+  });
+
+  // Filtrado de tickets
+  const statusFilter = document.getElementById('statusFilter') as HTMLSelectElement;
+  const priorityFilter = document.getElementById('priorityFilter') as HTMLSelectElement;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+
+  function filterTickets() {
+    const tickets = document.querySelectorAll('.ticket-item');
+    const status = statusFilter.value.toLowerCase();
+    const priority = priorityFilter.value.toLowerCase();
+    const search = searchInput.value.toLowerCase();
+
+    tickets.forEach((ticket) => {
+      const ticketEl = ticket as HTMLElement;
+      const ticketStatus = ticketEl.dataset.status?.toLowerCase() || '';
+      const ticketPriority = ticketEl.dataset.priority?.toLowerCase() || '';
+      const ticketText = ticketEl.textContent?.toLowerCase() || '';
+
+      const statusMatch = !status || ticketStatus === status;
+      const priorityMatch = !priority || ticketPriority === priority;
+      const searchMatch = !search || ticketText.includes(search);
+
+      ticketEl.style.display = statusMatch && priorityMatch && searchMatch ? 'block' : 'none';
+    });
+  }
+
+  // Manejar archivos adjuntos
+  const fileInput = document.getElementById('file-attachment') as HTMLInputElement;
+  const attachmentsList = document.getElementById('attachments-list');
+
+  if (fileInput && attachmentsList) {
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from((e.target as HTMLInputElement).files || []);
+      files.forEach(file => {
+        if (file.size <= 5 * 1024 * 1024) { // 5MB límite
+          const item = document.createElement('div');
+          item.className = 'flex items-center space-x-2 bg-gray-100 rounded p-2 text-sm';
+          item.innerHTML = `
+            <span>${file.name}</span>
+            <button class="text-gray-500 hover:text-gray-700">&times;</button>
+          `;
+          attachmentsList.appendChild(item);
+
+          // Manejar eliminación de archivo
+          const removeButton = item.querySelector('button');
+          removeButton?.addEventListener('click', () => {
+            item.remove();
+          });
+        } else {
+          alert('El archivo excede el límite de 5MB');
+        }
+      });
+    });
+  }
+
+  statusFilter?.addEventListener('change', filterTickets);
+  priorityFilter?.addEventListener('change', filterTickets);
+  searchInput?.addEventListener('input', filterTickets);
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ticket-item {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .ticket-item:hover {
+    transform: translateY(-1px);
+  }
+
+  .attachment-preview {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .message-bubble {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .message-bubble.sent {
+    background-color: #1d4ed8;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 0.25rem;
+  }
+
+  .message-bubble.received {
+    background-color: #f3f4f6;
+    color: #111827;
+    margin-right: auto;
+    border-bottom-left-radius: 0.25rem;
+  }
+
+  .timestamp {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+</style>

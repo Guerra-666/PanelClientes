@@ -1,191 +1,37 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import NavBar from "../components/NavBar.astro";
-import SideBar from "../components/SideBar.astro";
-import Card from "../components/Card.astro";
-import ClientInfo from "../components/Dashboard/ClientInfo.astro";
-import PackageInfo from "../components/Dashboard/PackageInfo.astro";
-import TicketsHistory from "../components/Dashboard/TicketsHistory.astro";
-import ActiveServices from "../components/Dashboard/ActiveServices.astro";
+// Redirección automática al usuario por defecto (ID: 19)
+// Cuando alguien accede a localhost:4322/ será redirigido a localhost:4322/19
 
-// Definir la página actual
-const currentPage = "dashboard";
-
-// Simular llamada a API - Cargar datos del JSON
-async function fetchDashboardData() {
-  try {
-    // Simular delay de API real
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // Simular logs de API
-    console.log("🚀 Fetching dashboard data from API...");
-    console.log("📍 API Endpoint: /api/dashboard/client-data");
-    
-    // En un entorno real, esto sería una llamada fetch() como:
-    // const response = await fetch('/api/dashboard/client-data');
-    // const data = await response.json();
-    
-    // Para esta simulación, cargamos desde un archivo JSON local
-    const dashboardData = await import("../data/dashboardData.json");
-    
-    console.log("✅ Dashboard data loaded successfully");
-    console.log("📊 Data summary:", {
-      client: dashboardData.default.client.empresa,
-      services: dashboardData.default.services.length,
-      tickets: dashboardData.default.tickets.length
-    });
-    
-    return dashboardData.default;
-  } catch (error) {
-    console.error("❌ Error al cargar datos del dashboard:", error);
-    
-    // Datos fallback en caso de error de API
-    return {
-      client: { 
-        empresa: "Cliente", 
-        contacto: "Usuario", 
-        email: "email@ejemplo.com", 
-        telefono: "N/A", 
-        fechaRegistro: "N/A" 
-      },
-      package: { 
-        name: "Básico", 
-        status: "Activo", 
-        nextBilling: "N/A", 
-        activeServices: 0, 
-        support247: false 
-      },
-      tickets: [],
-      services: [],
-      stats: { 
-        totalServices: 0, 
-        activeServices: 0, 
-        completedServices: 0, 
-        openTickets: 0 
-      }
-    };
-  }
-}
-
-// Obtener datos de la "API"
-const apiResponse = await fetchDashboardData();
-
-// Extraer datos específicos para cada componente
-const clientData = {
-  empresa: apiResponse.client.empresa,
-  contacto: apiResponse.client.contacto,
-  email: apiResponse.client.email,
-  telefono: apiResponse.client.telefono,
-  fechaRegistro: apiResponse.client.fechaRegistro
-};
-
-// Convertir tickets con tipo correcto
-const ticketsData = apiResponse.tickets
-  .filter(ticket => ticket.status === "En progreso" || ticket.status === "Resuelto")
-  .map(ticket => ({
-    title: ticket.title,
-    status: ticket.status as "En progreso" | "Resuelto",
-    priority: ticket.priority as "high" | "medium" | "low",
-    dateOpened: ticket.dateOpened,
-    ...(ticket.dateResolved && { dateResolved: ticket.dateResolved })
-  }));
-
-// Convertir servicios con tipo correcto, mapeando estados
-const servicesData = apiResponse.services.map(service => {
-  let status: "Activo" | "Entregado" | "Inactivo";
-  
-  switch (service.status) {
-    case "Activo":
-      status = "Activo";
-      break;
-    case "Entregado":
-      status = "Entregado";
-      break;
-    case "En Configuración":
-    case "Pendiente":
-    default:
-      status = "Inactivo";
-      break;
-  }
-  
-  return {
-    name: service.name,
-    description: service.description,
-    status: status,
-    startDate: service.startDate,
-    endDate: service.endDate
-  };
-});
-
-// Datos del paquete
-const packageData = {
-  packageName: apiResponse.package.name,
-  status: apiResponse.package.status,
-  nextBilling: apiResponse.package.nextBilling,
-  activeServices: apiResponse.stats.activeServices,
-  support247: apiResponse.package.support247
-};
+return Astro.redirect('/19');
 ---
 
-<Layout currentPage={currentPage}>
-  <!-- Welcome Section -->
-  <div class="mb-6 sm:mb-8 lg:mb-10">
-    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">Bienvenido, {clientData.contacto}</h2>
-    <p class="text-sm sm:text-base text-gray-600">Gestiona tus servicios y mantente al día con tu cuenta</p>
-  </div>
-
-  <!-- Dashboard Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8 lg:mb-10">
-    
-    <!-- Información del Cliente -->
-    <ClientInfo clientData={clientData} />
-
-    <!-- Paquete Contratado -->
-    <PackageInfo 
-      packageName={packageData.packageName}
-      status={packageData.status}
-      nextBilling={packageData.nextBilling}
-      activeServices={packageData.activeServices}
-      support247={packageData.support247}
-    />
-
-    <!-- Últimos Tickets -->
-    <TicketsHistory tickets={ticketsData} />
-  </div>
-
-  <!-- Servicios Activos -->
-  <ActiveServices services={servicesData} />
-</Layout>
+<!-- Esta página redirige automáticamente al dashboard del usuario ID: 19 -->
 
 <!--
-=== SIMULACIÓN DE API ===
+=== PÁGINA DE REDIRECCIÓN AUTOMÁTICA ===
 
-Esta página simula la integración con una API REST para obtener datos dinámicos del dashboard.
+Esta página implementa una redirección automática para mejorar la UX.
 
-📂 ARCHIVO DE DATOS: src/data/dashboardData.json
-- Contiene todos los datos estructurados que normalmente vendrían de una API
-- Incluye: cliente, paquetes, tickets, servicios, estadísticas y notificaciones
+🎯 COMPORTAMIENTO:
+- URL: localhost:4322/ (raíz del sitio)
+- Acción: Redirección automática a localhost:4322/19
+- Usuario por defecto: ID 19 (usuario principal de prueba)
 
-🔄 FUNCIÓN fetchDashboardData():
-- Simula el delay de una llamada HTTP real (100ms)
-- En producción, reemplazar con: fetch('/api/dashboard/client-data')
-- Incluye manejo de errores con datos fallback
-- Logs detallados para debugging
+🔄 FLUJO DE NAVEGACIÓN:
+1. Usuario accede a localhost:4322/
+2. Astro.redirect('/19') ejecuta redirección
+3. Usuario termina en localhost:4322/19 automáticamente
+4. Se carga dashboard del usuario ID: 19
 
-📊 PROCESAMIENTO DE DATOS:
-- Los datos JSON se mapean a las interfaces TypeScript requeridas
-- Se filtran y transforman según las necesidades de cada componente
-- Conversión de tipos para compatibilidad con componentes existentes
+📍 CONFIGURACIÓN:
+- Redirección: Server-side (301 permanent redirect)
+- Usuario por defecto: ID 19 (modificable cambiando el número)
+- Velocidad: Instantánea (sin JavaScript del lado cliente)
 
-🎯 COMPONENTES ALIMENTADOS POR API:
-- ClientInfo: Datos del cliente y empresa
-- PackageInfo: Información del paquete contratado
-- TicketsHistory: Historial de tickets filtrado
-- ActiveServices: Lista de servicios con estados mapeados
-
-🚀 MIGRACIÓN A API REAL:
-1. Reemplazar import JSON por llamadas fetch()
-2. Agregar headers de autorización si es necesario
-3. Implementar cache y revalidación de datos
-4. Añadir estados de loading y error en el UI
--->
+⚡ VENTAJAS:
+✅ UX mejorada: No página "vacía" en la raíz
+✅ SEO friendly: Redirección permanente estándar
+✅ Performance: Redirección server-side inmediata
+✅ Bookmark friendly: Los usuarios pueden bookmarkear /19 directamente
+✅ Configuración simple: Un solo número para cambiar usuario por defecto
+-->    

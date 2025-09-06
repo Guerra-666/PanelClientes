@@ -1,0 +1,244 @@
+---
+import { TicketService } from '../../services/ticketService';
+
+interface Props {
+  userId: string;
+  ticketId: string;
+}
+
+const { userId, ticketId } = Astro.props;
+const ticket = await TicketService.getTicketById(userId, ticketId);
+
+if (!ticket) {
+  return Astro.redirect('/404');
+}
+---
+
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl">
+  <div class="border-b border-gray-200 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="flex items-center space-x-3 mb-2">
+          <span class={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
+            ticket.status === "En Progreso" ? "bg-orange-100 text-orange-800" :
+            ticket.status === "Resuelto" ? "bg-green-100 text-green-800" :
+            "bg-yellow-100 text-yellow-800"
+          }`}>
+            {ticket.status}
+          </span>
+          <span class="text-sm text-gray-500">#{ticket.id}</span>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900">{ticket.title}</h2>
+        <p class="text-gray-600 mt-1">{ticket.description}</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">
+      <div>
+        <span class="font-medium text-gray-700">Categoría:</span>
+        <p class="text-gray-600">{ticket.category}</p>
+      </div>
+      <div>
+        <span class="font-medium text-gray-700">Servicio:</span>
+        <p class="text-gray-600">{ticket.service}</p>
+      </div>
+      <div>
+        <span class="font-medium text-gray-700">Asignado a:</span>
+        <p class="text-gray-600">{ticket.assignedTo}</p>
+      </div>
+      <div>
+        <span class="font-medium text-gray-700">Creado:</span>
+        <p class="text-gray-600">{ticket.created}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Messages -->
+  <div class="p-6 max-h-[600px] overflow-y-auto">
+    <div class="space-y-4">
+      {ticket.messages.map((message) => (
+        <div class={`flex ${message.type === "client" ? "justify-end" : "justify-start"}`}>
+          <div class={`flex items-start space-x-3 max-w-[70%] ${message.type === "client" ? "flex-row-reverse space-x-reverse" : ""}`}>
+            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+              <span class="text-xs font-medium">{message.avatar}</span>
+            </div>
+            <div class={`rounded-lg p-3 ${
+              message.type === "client" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-900"
+            }`}>
+              <div class="flex items-center space-x-2 mb-1">
+                <span class={`text-sm font-medium ${
+                  message.type === "client" ? "text-blue-100" : "text-gray-700"
+                }`}>
+                  {message.sender}
+                </span>
+                <span class={`text-xs ${
+                  message.type === "client" ? "text-blue-200" : "text-gray-500"
+                }`}>
+                  {message.timestamp}
+                </span>
+              </div>
+              <p class="text-sm leading-relaxed whitespace-pre-line">{message.message}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {ticket.status === "En Progreso" ? (
+    <form 
+      class="border-t border-gray-200 p-4"
+      id="messageForm"
+      data-ticket-id={ticket.id}
+    >
+      <div class="flex items-end space-x-3">
+        <div class="flex-1">
+          <textarea
+            name="message"
+            placeholder="Escribe tu mensaje aquí..."
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+          <input
+            type="file"
+            id="file-upload"
+            name="attachments"
+            multiple
+            accept="image/*,.pdf,.txt"
+            class="hidden"
+          />
+          <button
+            type="button"
+            class="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+            onclick="document.getElementById('file-upload').click()"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+            </svg>
+          </button>
+
+          <button
+            type="submit"
+            class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="attachments-preview" class="mt-2 flex flex-wrap gap-2"></div>
+
+      <div class="flex items-center justify-between mt-2">
+        <p class="text-xs text-gray-500">
+          Presiona Enter para enviar, Shift + Enter para nueva línea
+        </p>
+        <p class="text-xs text-gray-500">
+          Máximo 5MB por archivo • Formatos: JPG, PNG, GIF, PDF, TXT
+        </p>
+      </div>
+    </form>
+  ) : (
+    <div class="border-t border-gray-200 p-4">
+      <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+        <div class="flex items-center justify-center space-x-2">
+          <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+            <span class="text-green-600 text-sm font-medium">✓</span>
+          </div>
+          <p class="text-sm text-green-800 font-medium">Este ticket ha sido resuelto</p>
+        </div>
+        <p class="text-xs text-green-600 mt-1">
+          Ya no es posible enviar mensajes. Si necesitas ayuda adicional, crea un nuevo ticket.
+        </p>
+      </div>
+    </div>
+  )}
+</div>
+
+<script>
+  function handleFileUpload() {
+    const fileInput = document.getElementById('file-upload');
+    const previewContainer = document.getElementById('attachments-preview');
+
+    fileInput.addEventListener('change', (event) => {
+      previewContainer.innerHTML = '';
+      const files = Array.from(event.target.files);
+      
+      files.forEach((file, index) => {
+        if (file.size <= 5 * 1024 * 1024) { // 5MB limit
+          const preview = document.createElement('div');
+          preview.className = 'flex items-center bg-gray-100 rounded-lg px-3 py-2 text-sm';
+          preview.innerHTML = `
+            <svg class="h-4 w-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span class="text-gray-700 truncate max-w-32">${file.name}</span>
+            <button type="button" class="ml-2 text-gray-400 hover:text-gray-600" data-index="${index}">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          `;
+          previewContainer.appendChild(preview);
+        }
+      });
+    });
+
+    previewContainer.addEventListener('click', (event) => {
+      if (event.target.closest('button')) {
+        const index = event.target.closest('button').dataset.index;
+        const dt = new DataTransfer();
+        const files = fileInput.files;
+        
+        for (let i = 0; i < files.length; i++) {
+          if (i != index) dt.items.add(files[i]);
+        }
+        
+        fileInput.files = dt.files;
+        event.target.closest('div').remove();
+      }
+    });
+  }
+
+  function handleFormSubmission() {
+    const form = document.getElementById('messageForm');
+    if (!form) return;
+
+    const ticketId = form.dataset.ticketId;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const message = formData.get('message');
+      const files = formData.getAll('attachments');
+
+      if (!message.trim() && files.length === 0) return;
+
+      try {
+        const response = await fetch(`/api/tickets/${ticketId}/messages`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          // Reload the page to show the new message
+          window.location.reload();
+        } else {
+          alert('Error al enviar el mensaje');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al enviar el mensaje');
+      }
+    });
+  }
+
+  // Initialize
+  handleFileUpload();
+  handleFormSubmission();
+</script>

@@ -1,33 +1,34 @@
 ---
 export interface Props {
   currentPage?: string;
+  userId?: string;
 }
 
-const { currentPage = "dashboard" } = Astro.props;
+const { currentPage = "dashboard", userId = "19" } = Astro.props;
 
 const menuItems = [
   { 
     name: 'Dashboard', 
-    icon: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z', 
-    href: '/', 
+    icon: 'M3 3v5h4V3H3zm6 0v5h4V3H9zm6 0v5h4V3h-4zM3 10v5h4v-5H3zm6 0v5h4v-5H9zm6 0v5h4v-5h-4zM3 17v4h4v-4H3zm6 0v4h4v-4H9zm6 0v4h4v-4h-4z', 
+    href: `/${userId}`, 
     id: 'dashboard'
   },
   { 
     name: 'Mi Perfil', 
     icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-    href: '/perfil',
+    href: `/perfil/${userId}`,
     id: 'perfil'
   },
   { 
     name: 'Servicios', 
     icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-    href: '/servicios',
+    href: `/servicios/${userId}`,
     id: 'servicios'
   },
   { 
     name: 'Tickets', 
-    icon: 'M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z',
-    href: '/tickets',
+    icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z',
+    href: `/tickets/${userId}`,
     id: 'tickets'
   }
 ];
@@ -197,23 +198,38 @@ const menuItems = [
   });
 </script>
 <!--
-
 === INTERFAZ PROPS ===
 - currentPage?: Página actual activa (string opcional, default: "dashboard")
+- userId?: ID del usuario actual para rutas dinámicas (string opcional, default: "19")
 
 === DATOS DEL MENÚ ===
 - menuItems: Array de objetos con id, label e icon (path SVG)
-- Navegación condicional: Dashboard va a "/" y otros van a "/{id}"
+- Navegación dinámica: Dashboard va a "/{userId}" y otros van a "/{id}"
+- Dashboard href: Construido dinámicamente usando userId prop
+
+=== RUTAS DINÁMICAS ===
+- Dashboard: href=`/${userId}` → Ej: "/19", "/1", "/25"
+- Profile: href="/perfil" → Estático
+- Services: href="/servicios" → Estático  
+- Tickets: href="/tickets" → Estático
 
 === CONTENEDOR PRINCIPAL (aside) ===
-- w-48: Ancho fijo de 12rem (192px)
+- w-43: Ancho personalizado optimizado para contenido
 - bg-white: Fondo blanco
 - border-r: Borde derecho
 - border-gray-200: Color del borde en gris claro
-- min-h-screen: Altura mínima del viewport completo
+- Responsive: Fixed en móviles, static en desktop
+- Transform: -translate-x-full en móviles (oculto), translate-x-0 en desktop
+
+=== FUNCIONALIDAD MÓVIL ===
+- Botón hamburguesa: Solo visible en móviles (lg:hidden)
+- Overlay: Fondo semitransparente cuando está abierto
+- Auto-close: Se cierra automáticamente al hacer clic en links
+- Escape key: Cierra con tecla Escape
+- Resize handling: Manejo inteligente de cambios de tamaño
 
 === CONTENEDOR INTERNO ===
-- p-4: Padding de 1rem (16px) en todos los lados
+- p-3 lg:p-4: Padding responsive (12px móvil, 16px desktop)
 
 === NAVEGACIÓN ===
 - space-y-1: Espacio vertical de 0.25rem (4px) entre elementos hijos
@@ -221,13 +237,12 @@ const menuItems = [
 === ENLACES DEL MENÚ (estado base) ===
 - flex: Display flex
 - items-center: Alinea elementos verticalmente al centro
-- space-x-2: Espacio horizontal de 0.5rem (8px) entre icono y texto
-- px-2: Padding horizontal de 0.5rem (8px)
-- py-1.5: Padding vertical de 0.375rem (6px)
+- px-3: Padding horizontal de 0.75rem (12px)  
+- py-3 lg:py-2.5: Padding vertical responsive (12px móvil, 10px desktop)
 - rounded-lg: Bordes redondeados grandes
-- text-sm: Tamaño de texto pequeño (14px)
+- text-base lg:text-base: Tamaño de texto responsive
 - font-medium: Peso de fuente medium
-- transition-colors: Transición suave en cambios de color
+- transition-all: Transición suave en todos los cambios
 
 === ESTADOS CONDICIONALES ===
 PÁGINA ACTIVA (currentPage === item.id):
@@ -236,11 +251,12 @@ PÁGINA ACTIVA (currentPage === item.id):
 
 PÁGINA INACTIVA:
 - text-gray-600: Texto gris medio
-- hover:bg-gray-50: Al hover, fondo gris muy claro
+- hover:bg-gray-100: Al hover, fondo gris claro
 - hover:text-gray-900: Al hover, texto gris muy oscuro
 
 === ICONOS SVG ===
-- w-4 h-4: Tamaño de 1rem x 1rem (16px)
+- h-5 w-5: Tamaño de 1.25rem x 1.25rem (20px)
+- mr-3: Margen derecho de 0.75rem (12px)
 - fill="none": Sin relleno
 - stroke="currentColor": Usa el color del texto actual
 - viewBox="0 0 24 24": Vista del SVG 24x24
@@ -248,9 +264,20 @@ PÁGINA INACTIVA:
 - stroke-linejoin="round": Uniones de línea redondeadas
 - stroke-width="2": Grosor de línea de 2px
 
-=== FUNCIONALIDAD ===
-- .map(): Itera sobre menuItems para crear enlaces dinámicamente
-- Template literal con clases condicionales usando operador ternario
-- Renderizado dinámico del path SVG con {item.icon}
-- Navegación inteligente: Dashboard → "/" | Otros → "/{item.id}"
+=== SCRIPT JAVASCRIPT ===
+- initializeMobileSidebar(): Función principal de inicialización
+- Event listeners: Click, keydown, resize
+- DOM ready: Compatible con DOMContentLoaded y astro:after-swap
+- Body overflow: Manejo de scroll durante overlay
+- Responsive behavior: Auto-adaptación a cambios de tamaño
+
+=== CARACTERÍSTICAS AVANZADAS ===
+✅ Rutas dinámicas por usuario
+✅ Responsive design completo
+✅ Mobile-first approach
+✅ Accesibilidad con focus-visible
+✅ Navegación por teclado (Escape)
+✅ Auto-close en navegación
+✅ Gestión de estado de scroll
+✅ Compatibilidad con Astro SSR/SPA
 -->
